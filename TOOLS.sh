@@ -46,3 +46,58 @@ rm -f data.zip
 
 }
 
+# check_cn_cidr <ipaddress>
+# check_cn_cidr 223.5.5.5 || echo false
+check_cn_cidr() {
+local ip
+local line
+local timeout=20
+if   [ "$1" == "" ]; then
+	local count=0
+	while read -r -t$timeout line; do
+		line="$(echo "$line" | sed -En "s|^([0-9\.]+)|\1| p" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")"
+		if [ ! "$line" == "" ]; then
+			ip[$count]="$line"
+			((count++))
+		fi
+	done
+else
+	ip=("$1")
+	if [ "$(echo "${ip[0]}" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ]; then echo 'check_cn_cidr: The <ipaddress> parameter is invalid'; return 1; fi
+fi
+
+local cnroute="$SRCDIR/$CNROUTE"
+eval "MASKGROUP=($(cat "$cnroute" | sed -En "s|^([0-9]+\.){3}[0-9]+/([0-9]+)$|\2| p" | sort | uniq))"
+local fumask
+local remask
+local bitand
+
+local ippart1
+local ippart2
+local ippart3
+local ippart4
+
+#echo "${#ip[@]}"
+for _ip in "${ip[@]}"; do
+
+ippart1=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\1| p")
+ippart2=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\2| p")
+ippart3=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\3| p")
+ippart4=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\4| p")
+
+	for _mask in "${MASKGROUP[@]}"; do
+		fumask=$[ $_mask / 8 ]
+		remask=$[ $_mask % 8 ]
+		bitand="$[ (2**${remask}-1) << (8-${remask}) ]"
+
+		case "$fumask" in
+			0) grep -E "^$[ ${ippart1} & $bitand ]\..+/${_mask}$" "$cnroute";;
+			1) grep -E "^${ippart1}\.$[ ${ippart2} & $bitand ]\..+/${_mask}$" "$cnroute";;
+			2) grep -E "^${ippart1}\.${ippart2}\.$[ ${ippart3} & $bitand ]\..+/${_mask}$" "$cnroute";;
+			3) grep -E "^${ippart1}\.${ippart2}\.${ippart3}\.$[ ${ippart4} & $bitand ]/${_mask}$" "$cnroute";;
+			#*) return 1;;
+		esac
+	done
+done
+}
+
