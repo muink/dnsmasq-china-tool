@@ -28,3 +28,21 @@ WORKDIR="$CURRENTDIR/Workshop"
 
 # sub function
 
+download_sources() {
+mkdir "$SRCDIR" 2>/dev/null
+local cnroute="$SRCDIR/$CNROUTE"
+
+# donwload dnsmasq-china-list/accelerated-domains.china.conf
+curl -sSL -o data.zip "$DCL" && unzip -joq data.zip $(echo $MAINLIST|sed -n 's|^|*/|; s| | */|g; p') -d "$SRCDIR"
+
+# donaload CN/HK CIDR
+#curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv china_ip_list.txt "$cnroute"
+#curl -sSL -o data.zip "$COIP" 
+#curl -sSL -o data.zip "$IPLIS" 
+#curl -sSL -o data.zip "$AUVPN" 
+curl -sSL -o data.zip "$CNRU2" && unzip -joq data.zip */chnroutes.txt -d "$SRCDIR"
+
+rm -f data.zip
+
+}
+
