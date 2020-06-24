@@ -117,3 +117,29 @@ ippart4=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\4| 
 done
 }
 
+# tldextract <url or rawdomain>
+tldextract() {
+local dns=$CNDNS
+
+local domain
+local line
+local timeout=20
+if   [ "$1" == "" ]; then
+	while read -r -t$timeout line; do
+		line="$(echo "$line" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
+		if [ ! "$line" == "" ]; then
+			dig $line @$dns +trace | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+			grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev # >> Multiple values
+		fi
+	done
+else
+	domain="$(echo "$1" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
+	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <domain> requires a valid argument'; return 1; fi
+	dig $domain @$dns +trace | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+	grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev # >> Multiple values
+	# sort reference: https://segmentfault.com/q/1010000000665713/a-1020000013574021
+fi
+
+# test_domain=(www.nc.jx.cn t.sina.com.cn yahoo.co.jp dsany.sgnic.sg tse1-mm.cn.bing.net www.henan.gov.cn.cdn30.com www.youngfunding.co.uk www.right.com.cn store.nintendo.co.jp store.steampowered.com www.taobao.com www.baidu.com www.bilibili.com blog.longwin.com.tw pvt.k12.ma.us)
+
+}
