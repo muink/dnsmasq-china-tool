@@ -144,6 +144,27 @@ fi
 
 }
 
+# check_nocn_domain <domain>
+check_nocn_domain() {
+local dns=$CNDNS
+
+local domain
+local line
+local timeout=20
+if   [ "$1" == "" ]; then
+	while read -r -t$timeout line; do
+		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
+			[ "$(dig $line @$dns +short | grep -E "^[0-9\.]+" | check_cn_cidr)" == "" ] && echo $line # > $(date +%Y-%m-%d_%T)
+		fi
+	done
+else
+	domain="$1"
+	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_nocn_domain: The <domain> requires a valid argument'; return 1; fi
+	[ "$(dig $domain @$dns +short | grep -E "^[0-9\.]+" | check_cn_cidr)" == "" ] && echo $domain # > $(date +%Y-%m-%d_%T)
+fi
+
+}
+
 # check_cdn <domain>
 check_cdn(){
 local cdnlist="$SRCDIR/$CDNLIST"
