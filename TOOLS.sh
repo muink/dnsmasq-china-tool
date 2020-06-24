@@ -143,3 +143,25 @@ fi
 # test_domain=(www.nc.jx.cn t.sina.com.cn yahoo.co.jp dsany.sgnic.sg tse1-mm.cn.bing.net www.henan.gov.cn.cdn30.com www.youngfunding.co.uk www.right.com.cn store.nintendo.co.jp store.steampowered.com www.taobao.com www.baidu.com www.bilibili.com blog.longwin.com.tw pvt.k12.ma.us)
 
 }
+
+# check_cdn <domain>
+check_cdn(){
+local cdnlist="$SRCDIR/$CDNLIST"
+
+local domain
+local line
+local timeout=20
+if   [ "$1" == "" ]; then
+	while read -r -t$timeout line; do
+		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
+			grep -E "\b${line}$" "$cdnlist"
+		fi
+	done
+else
+	domain="$1"
+	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_cdn: The <domain> requires a valid argument'; return 1; fi
+	grep -E "\b${domain}$" "$cdnlist"
+fi
+
+}
+
