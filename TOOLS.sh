@@ -118,8 +118,10 @@ done
 }
 
 # tldextract <url or rawdomain>
+# echo "www.baidu.com" | tldextract | xargs
 tldextract() {
 local dns=$CNDNS
+local retry=5
 
 local domain
 local line
@@ -128,15 +130,15 @@ if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		line="$(echo "$line" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
 		if [ ! "$line" == "" ]; then
-			dig $line @$dns +trace | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
-			grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev # >> Multiple values
+			dig $line @$dns +trace +tries=$retry | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+			grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev | tr 'A-Z' 'a-z' # >> Multiple values
 		fi
 	done
 else
 	domain="$(echo "$1" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
 	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <domain> requires a valid argument'; return 1; fi
-	dig $domain @$dns +trace | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
-	grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev # >> Multiple values
+	dig $domain @$dns +trace +tries=$retry | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+	grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev | tr 'A-Z' 'a-z' # >> Multiple values
 	# sort reference: https://segmentfault.com/q/1010000000665713/a-1020000013574021
 fi
 
