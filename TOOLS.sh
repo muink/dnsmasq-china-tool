@@ -144,6 +144,32 @@ fi
 
 }
 
+# get_nsdomain <tld>
+# echo "baidu.com" | get_nsdomain | xargs
+get_nsdomain() {
+local dns=$CNDNS
+
+local tld
+local line
+local timeout=20
+if   [ "$1" == "" ]; then
+	while read -r -t$timeout line; do
+		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
+			echo "$line" | xargs dig @$dns -t ns +short #|
+			#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+		fi
+	done
+else
+	tld="$1"
+	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <tld> requires a valid argument'; return 1; fi
+	echo "$tld" | xargs dig @$dns -t ns +short #|
+	#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+fi
+
+# test_tld=(nc.jx.cn weibo.com sina.com.cn yahoo.co.jp sgnic.sg bing.net cdn30.com youngfunding.co.uk right.com.cn nintendo.co.jp steampowered.com taobao.com a.shifen.com baidu.com bilibili.com longwin.com.tw k12.ma.us)
+
+}
+
 # check_nocn_domain <domain>
 check_nocn_domain() {
 local dns=$CNDNS
