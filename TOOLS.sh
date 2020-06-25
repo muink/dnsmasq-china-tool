@@ -235,3 +235,24 @@ fi
 
 }
 
+# check_black <nsdomain>
+check_black() {
+local blacklist="$SRCDIR/$NSBLACK"
+
+local nsdomain
+local line
+local timeout=20
+if   [ "$1" == "" ]; then
+	while read -r -t$timeout line; do
+		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
+			echo "$line" | grep -f "$blacklist"
+		fi
+	done
+else
+	nsdomain="$1"
+	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_black: The <nsdomain> requires a valid argument'; return 1; fi
+	echo "$nsdomain" | grep -f "$blacklist"
+fi
+
+}
+
