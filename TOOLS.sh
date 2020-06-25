@@ -214,24 +214,23 @@ fi
 
 }
 
-# check_white <domain>
+# check_white <nsdomain>
 check_white() {
 local whitelist="$SRCDIR/$NSWHITE"
-local dns=$CNDNS
 
-local domain
+local nsdomain
 local line
 local timeout=20
 if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
-			echo "$line" | xargs dig @$dns -t ns +short | grep -f "$whitelist"
+			echo "$line" | grep -f "$whitelist"
 		fi
 	done
 else
-	domain="$1"
-	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <domain> requires a valid argument'; return 1; fi
-	echo "$domain" | xargs dig @$dns -t ns +short | grep -f "$whitelist"
+	nsdomain="$1"
+	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <nsdomain> requires a valid argument'; return 1; fi
+	echo "$nsdomain" | grep -f "$whitelist"
 fi
 
 }
