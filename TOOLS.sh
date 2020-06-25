@@ -65,6 +65,45 @@ cp -f "$srcdomain" "$basedomain"
 
 }
 
+# cut_srcdomain [<baselistfile>]
+cut_srcdomain() {
+mkdir "$WORKDIR" 2>/dev/null
+local srcdomain="$SRCDIR/$MAINDOMAIN"
+local domainlinepart="$WORKDIR/${MAINDOMAIN%.*}"
+
+# Existing index count
+local index="$WORKDIR/$PARTINDEX"
+if [ -f "$index" ]; then
+	local indexcount=$[ $(cat "$index") + 0 ]
+else local indexcount=0; fi
+
+# New patch of dnsmasq-china-list
+if   [ -z "$1" ]; then echo >/dev/null;
+elif [ -f "$1" ]; then
+	local basedomain="$1"
+	cat "$srcdomain" | grep -wvf "$basedomain" | grep '[^[:space:]]' > "/tmp/$MAINDOMAIN.add"
+	local srcdomain="/tmp/$MAINDOMAIN.add"
+else echo 'cut_srcdomain: The <baselistfile> parameter is invalid'; return 1; fi
+
+
+local totalline=$[ $(sed -n "$=" "$srcdomain") + 0 ]
+local lineperfile=$LINEPERPART
+local filescount=$[ $totalline / $lineperfile ]
+local remainder=$[ $totalline % $lineperfile ]
+
+	for _count in $(seq $[ 1 + $indexcount ] $[ $filescount + $indexcount ]); do
+		local basepoint=$[ $[ $_count - 1 ] * $lineperfile + 1 ]
+		local endpoint=$[ $[ $_count - 1 ] * $lineperfile + $lineperfile ]
+		sed -En "$basepoint,$endpoint s|^server=/(.+)/[0-9\.]+$|\1| p" "$srcdomain" > "${domainlinepart}.${_count}.conf"
+	done
+	if [ "$remainder" -gt "0" ]; then
+		sed -En "$[ $[ $filescount + $indexcount ] * $lineperfile + 1 ],$ s|^server=/(.+)/[0-9\.]+$|\1| p" "$srcdomain" > "${domainlinepart}.$[ $filescount + $indexcount + 1 ].conf"
+		let filescount+=1
+	fi
+	echo "$[ $filescount + $indexcount ]" > "$index"
+
+}
+
 # rev <string>
 rev() {
 local string
