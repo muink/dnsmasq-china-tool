@@ -193,7 +193,7 @@ fi
 
 }
 
-# check_cdn <domain>
+# check_cdn <tld>
 check_cdn(){
 local cdnlist="$SRCDIR/$CDNLIST"
 
@@ -203,13 +203,13 @@ local timeout=20
 if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
-			grep -E "\b${line}$" "$cdnlist"
+			[ ! "$(grep -E "\b${line}$" "$cdnlist")" == "" ] && echo "$line"
 		fi
 	done
 else
 	domain="$1"
 	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_cdn: The <domain> requires a valid argument'; return 1; fi
-	grep -E "\b${domain}$" "$cdnlist"
+	[ ! "$(grep -E "\b${domain}$" "$cdnlist")" == "" ] && echo "$domain"
 fi
 
 }
