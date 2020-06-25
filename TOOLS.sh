@@ -46,6 +46,25 @@ rm -f data.zip
 
 }
 
+# update sources
+update_sources() {
+local srcdomain="$SRCDIR/$MAINDOMAIN"
+local basedomain="$CURRENTDIR/$MAINDOMAIN.base"
+
+mkdir "$CUSTOMDIR" 2>/dev/null
+local patch="$CUSTOMDIR/$MAINDOMAIN"
+
+if [ -e "$basedomain" ]; then
+	cat "$basedomain" | grep -wvf "$srcdomain" | grep '[^[:space:]]' >> "$patch.del"
+	cut_srcdomain "$basedomain" # generate new conf part file
+else
+	cut_srcdomain
+fi
+
+cp -f "$srcdomain" "$basedomain"
+
+}
+
 # rev <string>
 rev() {
 local string
