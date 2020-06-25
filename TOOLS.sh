@@ -37,12 +37,28 @@ curl -sSL -o data.zip "$DCL" && unzip -joq data.zip $(echo $MAINLIST|sed -n 's|^
 
 # donaload CN/HK CIDR
 #curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv china_ip_list.txt "$cnroute"
-#curl -sSL -o data.zip "$COIP" 
-#curl -sSL -o data.zip "$IPLIS" 
-#curl -sSL -o data.zip "$AUVPN" 
+#curl -sSL -o data.zip "$COIP"
+#curl -sSL -o data.zip "$IPLIS"
+#curl -sSL -o data.zip "$AUVPN"
 curl -sSL -o data.zip "$CNRU2" && unzip -joq data.zip */chnroutes.txt -d "$SRCDIR"
 
 rm -f data.zip
+
+}
+
+# rev <string>
+rev() {
+local string
+local line
+local timeout=20
+if   [ "$1" == "" ]; then
+	while read -r -t$timeout line; do
+		echo "$line" | sed -E '/\n/!G; s|(.)(.*\n)|&\2\1|; //D; s|.||'
+	done
+else
+	string="$1"
+	echo "$string" | sed -E '/\n/!G; s|(.)(.*\n)|&\2\1|; //D; s|.||'
+fi
 
 }
 
