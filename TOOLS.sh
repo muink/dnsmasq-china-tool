@@ -4,10 +4,10 @@
 # init
 DCL='https://github.com/felixonmars/dnsmasq-china-list/archive/master.zip'
 IPIP='https://github.com/17mon/china_ip_list/archive/master.zip'
+CZIP='https://github.com/metowolf/iplist/archive/master.zip'
 COIP='https://github.com/gaoyifan/china-operator-ip/archive/ip-lists.zip'
-IPLIS='https://github.com/metowolf/iplist/archive/master.zip'
-AUVPN='https://github.com/zealic/autorosvpn/archive/master.zip'
 CNRU2='https://github.com/misakaio/chnroutes2/archive/master.zip'
+AUVPN='https://github.com/zealic/autorosvpn/archive/master.zip'
 CNDNS=223.5.5.5
 LINEPERPART=200
 
@@ -16,7 +16,7 @@ BROKENDOMAIN=broken-domains.txt
 CDNLIST=cdn-testlist.txt
 NSBLACK=ns-blacklist.txt
 NSWHITE=ns-whitelist.txt
-CNROUTE=chnroutes.txt
+CNROUTE=cnrouteing.txt
 PARTINDEX=.index
 MAINLIST="$MAINDOMAIN $CDNLIST $NSBLACK $NSWHITE"
 
@@ -30,20 +30,26 @@ WORKDIR="$CURRENTDIR/Workshop"
 
 download_sources() {
 mkdir "$SRCDIR" 2>/dev/null
-local cnroute="$SRCDIR/$CNROUTE"
+mkdir "$CUSTOMDIR" 2>/dev/null
+pushd "$SRCDIR" >/dev/null
 
 # donwload dnsmasq-china-list/accelerated-domains.china.conf
-curl -sSL -o data.zip "$DCL" && unzip -joq data.zip $(echo $MAINLIST|sed -n 's|^|*/|; s| | */|g; p') -d "$SRCDIR"
+curl -sSL -o data.zip "$DCL" && unzip -joq data.zip $(echo $MAINLIST|sed -n 's|^|*/|; s| | */|g; p')
 
-# donaload CN/HK CIDR
-#curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv china_ip_list.txt "$cnroute"
-#curl -sSL -o data.zip "$COIP"
-#curl -sSL -o data.zip "$IPLIS"
-#curl -sSL -o data.zip "$AUVPN"
-curl -sSL -o data.zip "$CNRU2" && unzip -joq data.zip */chnroutes.txt -d "$SRCDIR"
+#[ -f "$CUSTOMDIR/$CDNLIST" ] && (sort -m "$CDNLIST" "$CUSTOMDIR/$CDNLIST" | grep '[^[:space:]]' | sort -u -o "$CDNLIST")
+[ -f "$CUSTOMDIR/$NSWHITE" ] && (sort -m "$NSWHITE" "$CUSTOMDIR/$NSWHITE" | grep '[^[:space:]]' | sort -u -o "$NSWHITE")
+[ -f "$CUSTOMDIR/$NSBLACK" ] && (sort -m "$NSBLACK" "$CUSTOMDIR/$NSBLACK" | grep '[^[:space:]]' | sort -u -o "$NSBLACK")
+
+# donaload CN CIDR
+rm -f "$CNROUTE" 2>/dev/null
+curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv "china_ip_list.txt" "$CNROUTE"
+#curl -sSL -o data.zip "$CZIP" && unzip -joq data.zip */special/china.txt && mv "china.txt" "$CNROUTE"
+#curl -sSL -o data.zip "$COIP" && unzip -joq data.zip */china.txt && mv "china.txt" "$CNROUTE"
+#sort -t'.' -nk1,1 -rnk2,2 -rnk3,3 -rk4,4 "$CNROUTE" -o "$CNROUTE"
 
 rm -f data.zip
 
+popd >/dev/null
 }
 
 # update sources
