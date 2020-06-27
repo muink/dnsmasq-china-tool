@@ -126,59 +126,40 @@ fi
 
 }
 
-# check_cn_cidr <ipaddress>
-# check_cn_cidr 223.5.5.5 || echo false
-check_cn_cidr() {
-local ip
-local line
-local timeout=20
-if   [ "$1" == "" ]; then
-	local count=0
-	while read -r -t$timeout line; do
-		line="$(echo "$line" | sed -En "s|^([0-9\.]+)|\1| p" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")"
-		if [ ! "$line" == "" ]; then
-			ip[$count]="$line"
-			((count++))
-		fi
-	done
-else
-	ip=("$1")
-	if [ "$(echo "${ip[0]}" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ]; then echo 'check_cn_cidr: The <ipaddress> parameter is invalid'; return 1; fi
-fi
+# find_in_cidr
+# find_in_cidr <cidrrules> <ipaddress> <maskgroup>
+find_in_cidr() {
+#	local initvar=(rules ip)
+#	for _var in "${initvar[@]}"; do
+#		if [ -z "$1" ]; then echo "find_in_cidr: The <$_var> requires an argument"; return 1;
+#		else eval "local \$_var=\"\$1\"" && shift; fi
+#	done
+#
+#[ ! -f "$rules" ] && echo "find_in_cidr: The <cidrrules> parameter is invalid"; return 1
+#[ ! "$(echo "$ip" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ] && echo "find_in_cidr: The <ipaddress> parameter is invalid"; return 1
+#local maskgp=("$@"); #[ "${#arr[@]}" -eq "0" ] && echo "find_in_cidr: The <maskgroup> requires an array argument"; return 1
 
-local cnroute="$SRCDIR/$CNROUTE"
-eval "MASKGROUP=($(cat "$cnroute" | sed -En "s|^([0-9]+\.){3}[0-9]+/([0-9]+)$|\2| p" | sort | uniq))"
-local fumask
-local remask
-local bitand
 
-local ippart1
-local ippart2
-local ippart3
-local ippart4
+ippart1=$(echo "$ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\1| p")
+ippart2=$(echo "$ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\2| p")
+ippart3=$(echo "$ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\3| p")
+ippart4=$(echo "$ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\4| p")
 
-#echo "${#ip[@]}"
-for _ip in "${ip[@]}"; do
-
-ippart1=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\1| p")
-ippart2=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\2| p")
-ippart3=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\3| p")
-ippart4=$(echo "$_ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\4| p")
-
-	for _mask in "${MASKGROUP[@]}"; do
+	for _mask in "${maskgroup[@]}"; do
 		fumask=$[ $_mask / 8 ]
 		remask=$[ $_mask % 8 ]
 		bitand="$[ (2**${remask}-1) << (8-${remask}) ]"
 
 		case "$fumask" in
-			0) grep -E "^$[ ${ippart1} & $bitand ]\..+/${_mask}$" "$cnroute";;
-			1) grep -E "^${ippart1}\.$[ ${ippart2} & $bitand ]\..+/${_mask}$" "$cnroute";;
-			2) grep -E "^${ippart1}\.${ippart2}\.$[ ${ippart3} & $bitand ]\..+/${_mask}$" "$cnroute";;
-			3) grep -E "^${ippart1}\.${ippart2}\.${ippart3}\.$[ ${ippart4} & $bitand ]/${_mask}$" "$cnroute";;
+			0) grep -E "^$[ ${ippart1} & $bitand ]\..+/${_mask}\b" "$cnroute";;
+			1) grep -E "^${ippart1}\.$[ ${ippart2} & $bitand ]\..+/${_mask}\b" "$cnroute";;
+			2) grep -E "^${ippart1}\.${ippart2}\.$[ ${ippart3} & $bitand ]\..+/${_mask}\b" "$cnroute";;
+			3) grep -E "^${ippart1}\.${ippart2}\.${ippart3}\.$[ ${ippart4} & $bitand ]/${_mask}\b" "$cnroute";;
+			4) grep -E "^${ippart1}\.${ippart2}\.${ippart3}\.${ippart4}/${_mask}\b" "$cnroute";;
 			#*) return 1;;
 		esac
 	done
-done
+
 }
 
 # tldextract <url or rawdomain>
@@ -236,6 +217,39 @@ fi
 
 }
 
+# check_cn_ip <ipaddress>
+# check_cn_ip 223.5.5.5 || echo false
+check_cn_ip() {
+local cnroute="$SRCDIR/$CNROUTE"
+local line
+local ip
+local timeout=20
+
+eval "maskgroup=($(cat "$cnroute" | sed -En "s|^([0-9]+\.){3}[0-9]+/([0-9]+)$|\2| p" | sort -u))"
+local fumask
+local remask
+local bitand
+
+local ippart1
+local ippart2
+local ippart3
+local ippart4
+
+if   [ "$1" == "" ]; then
+	while read -r -t$timeout line; do
+		ip="$(echo "$line" | sed -En "s|^([0-9\.]+)|\1| p" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")"
+		if [ ! "$ip" == "" ]; then
+			find_in_cidr
+		fi
+	done
+else
+	ip="$1"
+	if [ "$(echo "${ip[0]}" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ]; then echo 'check_cn_ip: The <ipaddress> parameter is invalid'; return 1; fi
+	find_in_cidr
+fi
+
+}
+
 # check_nocn_domain <domain>
 check_nocn_domain() {
 local dns=$CNDNS
@@ -246,13 +260,13 @@ local timeout=20
 if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
-			[ "$(dig $line @$dns +short | grep -E "^[0-9\.]+" | check_cn_cidr)" == "" ] && echo $line # > $(date +%Y-%m-%d_%T)
+			[ "$(dig $line @$dns +short | grep -E "^[0-9\.]+" | check_cn_ip)" == "" ] && echo $line # > $(date +%Y-%m-%d_%T)
 		fi
 	done
 else
 	domain="$1"
 	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_nocn_domain: The <domain> requires a valid argument'; return 1; fi
-	[ "$(dig $domain @$dns +short | grep -E "^[0-9\.]+" | check_cn_cidr)" == "" ] && echo $domain # > $(date +%Y-%m-%d_%T)
+	[ "$(dig $domain @$dns +short | grep -E "^[0-9\.]+" | check_cn_ip)" == "" ] && echo $domain # > $(date +%Y-%m-%d_%T)
 fi
 
 }
