@@ -110,6 +110,24 @@ local remainder=$[ $totalline % $lineperfile ]
 
 }
 
+# rand_num <min> <max> [<rounds>]
+rand_num() {
+if   [ -z "$3" -o "$[ $3 + 1 ]" -eq "1" ]; then local rounds=1;
+elif [ "$3" -gt "$2" ]; then local rounds=$2;
+else local rounds=$3; fi
+local min=
+local max=
+local num=
+
+(for _ in $(seq 1 $[ $rounds + $rounds / 2 ]); do
+	min=$1
+	max=$[ $2 - $min + 1 ]
+	num=$(cat /dev/urandom | head -n 10 | cksum | cut -f1 -d' ')
+	echo $[ $num % $max + $min ]
+done) | sort -u | sed -n "1,$rounds p"
+
+}
+
 # rev <string>
 rev() {
 local string
