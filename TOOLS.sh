@@ -35,10 +35,7 @@ pushd "$SRCDIR" >/dev/null
 
 # donwload dnsmasq-china-list/accelerated-domains.china.conf
 curl -sSL -o data.zip "$DCL" && unzip -joq data.zip $(echo $MAINLIST|sed -n 's|^|*/|; s| | */|g; p')
-
-#[ -f "$CUSTOMDIR/$CDNLIST" ] && (sort -m "$CDNLIST" "$CUSTOMDIR/$CDNLIST" | grep '[^[:space:]]' | sort -u -o "$CDNLIST")
-[ -f "$CUSTOMDIR/$NSWHITE" ] && (sort -m "$NSWHITE" "$CUSTOMDIR/$NSWHITE" | grep '[^[:space:]]' | sort -u -o "$NSWHITE")
-[ -f "$CUSTOMDIR/$NSBLACK" ] && (sort -m "$NSBLACK" "$CUSTOMDIR/$NSBLACK" | grep '[^[:space:]]' | sort -u -o "$NSBLACK")
+update_rules
 
 # donaload CN CIDR
 rm -f "$CNROUTE" 2>/dev/null
@@ -50,6 +47,14 @@ curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv "
 rm -f data.zip
 
 popd >/dev/null
+}
+
+# update rules
+update_rules() {
+#[ -f "$CUSTOMDIR/$CDNLIST" ] && sort -m "$SRCDIR/$CDNLIST" "$CUSTOMDIR/$CDNLIST" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$SRCDIR/$CDNLIST"
+[ -f "$CUSTOMDIR/$NSWHITE" ] && sort -m "$SRCDIR/$NSWHITE" "$CUSTOMDIR/$NSWHITE" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$SRCDIR/$NSWHITE"
+[ -f "$CUSTOMDIR/$NSBLACK" ] && sort -m "$SRCDIR/$NSBLACK" "$CUSTOMDIR/$NSBLACK" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$SRCDIR/$NSBLACK"
+
 }
 
 # update sources
