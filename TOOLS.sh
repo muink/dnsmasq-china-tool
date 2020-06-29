@@ -71,25 +71,19 @@ cp -f "$srcdomain" "$basedomain"
 
 }
 
-# cut_srcdomain [<baselistfile>]
+# cut_srcdomain <becut>
 cut_srcdomain() {
+if   [ -z "$1" ]; then echo 'cut_srcdomain: The <becut> requires an argument'; return 1;
+elif [ -f "$1" ]; then local srcdomain="$1";
+else echo 'cut_srcdomain: The <becut> parameter is invalid'; return 1; fi
+
 mkdir "$WORKDIR" 2>/dev/null
-local srcdomain="$SRCDIR/$MAINDOMAIN"
 local domainlinepart="$WORKDIR/${MAINDOMAIN%.*}"
 
 # Existing index count
 local index="$WORKDIR/$PARTINDEX"
-if [ -f "$index" ]; then
-	local indexcount=$[ $(cat "$index") + 0 ]
+if [ -f "$index" ]; then local indexcount=$[ $(cat "$index") + 0 ];
 else local indexcount=0; fi
-
-# New patch of dnsmasq-china-list
-if   [ -z "$1" ]; then echo >/dev/null;
-elif [ -f "$1" ]; then
-	local basedomain="$1"
-	cat "$srcdomain" | grep -wvf "$basedomain" | grep '[^[:space:]]' > "/tmp/$MAINDOMAIN.add"
-	local srcdomain="/tmp/$MAINDOMAIN.add"
-else echo 'cut_srcdomain: The <baselistfile> parameter is invalid'; return 1; fi
 
 
 local totalline=$[ $(sed -n "$=" "$srcdomain") + 0 ]
