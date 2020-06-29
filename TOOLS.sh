@@ -55,19 +55,24 @@ popd >/dev/null
 # update sources
 update_sources() {
 local srcdomain="$SRCDIR/$MAINDOMAIN"
+local outdomain="$CURRENTDIR/$MAINDOMAIN"
 local basedomain="$CURRENTDIR/$MAINDOMAIN.base"
 
 mkdir "$CUSTOMDIR" 2>/dev/null
 local patch="$CUSTOMDIR/$MAINDOMAIN"
 
 if [ -e "$basedomain" ]; then
-	cat "$basedomain" | grep -wvf "$srcdomain" | grep '[^[:space:]]' >> "$patch.del"
-	cut_srcdomain "$basedomain" # generate new conf part file
+	diff -aZBN "$basedomain" "$srcdomain" | sed -n "/^< / {s|^< || p}" >> "$patch.del"
+	diff -aZBN "$basedomain" "$srcdomain" | sed -n "/^> / {s|^> || p}" > "/tmp/$MAINDOMAIN.add"
+	cut_srcdomain "/tmp/$MAINDOMAIN.add" # generate new conf part file
+	cat "/tmp/$MAINDOMAIN.add" >> "$outdomain"
 else
-	cut_srcdomain
+	cut_srcdomain "$srcdomain"
+	cp -f "$srcdomain" "$outdomain"
 fi
 
 cp -f "$srcdomain" "$basedomain"
+sort -u "$outdomain" -o "$outdomain"
 
 }
 
