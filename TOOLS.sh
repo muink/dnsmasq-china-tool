@@ -12,7 +12,7 @@ CNDNS=223.5.5.5
 LINEPERPART=200
 
 MAINDOMAIN=accelerated-domains.china.conf
-BROKENDOMAIN=broken-domains.txt
+UNVERIFIEDNS=unverified-ns.txt
 CDNLIST=cdn-testlist.txt
 NSBLACK=ns-blacklist.txt
 NSWHITE=ns-whitelist.txt
@@ -355,6 +355,54 @@ else
 	nsdomain="$1"
 	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_black: The <nsdomain> requires a valid argument'; return 1; fi
 	echo "$nsdomain" | grep -f "$blacklist"
+fi
+
+}
+
+# verify_domain [<rounds>]
+verify_domain() {
+[ -z "$1" -o "$[ $1 + 1 ]" -eq "1" ] && local rounds=1 || local rounds=$1
+
+# Workshop
+local workidir="$WORKDIR"
+local index="$WORKDIR/$PARTINDEX"
+local domainlinepart="$WORKDIR/${MAINDOMAIN%.*}"
+local partcount=$[ $(ls -1 "$workidir/" | grep -E "\.conf$" | sed -n '$=') + 0 ]
+
+# Custom
+local patch="$CUSTOMDIR/$MAINDOMAIN"
+local unverifiedns="$CUSTOMDIR/$UNVERIFIEDNS"
+local unverifieddomain="$CUSTOMDIR/$UNVERIFIEDDOMAIN"
+
+
+echo "$[ $(ls -1 "$workidir/" | sed -En "s|^.+\.([0-9]+)\.conf$|\1| p" | sort -rn | sed -n '1p') + 0 ]" > "$index" # update .index count
+
+if [ "$partcount" -gt "0" ]; then
+	local whichone=$(rand_num 1 $partcount $rounds | xargs | sed 's|^|^|; s/ /:|^/g; s|$|:|')
+	local pickdindex=$(ls -1 "$workidir/" | grep -E "\.conf$" | grep -n "" | grep -E "$whichone" | sed -En "s|^.+\.([0-9]+)\.conf$|\1| p" | xargs)
+	local count=1
+
+	local tld
+	local nslist
+
+	for _i in $pickdindex; do
+		echo "rounds: $count/$rounds  index: $_i"
+
+		for _l in $(seq 1 $[ $(sed -n '$=' "${domainlinepart}.${_i}.conf") + 0 ]); do
+			tld="$(sed -n "$_l p" "${domainlinepart}.${_i}.conf")"
+			echo $_l: $tld
+			echo "$tld" | grep -E "\.?cn\.?$|\.top\.?$" >/dev/null && continue
+			check_cdn "$tld" >/dev/null && continue
+			nslist="$(get_nsdomain "$tld" | xargs)"
+				[ "$nslist" == "" ] && echo "$tld" >> "$patch.del" && continue
+				check_white "$nslist" >/dev/null && continue
+				check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
+			echo "${tld}:${nslist}" >> "$unverifiedns"
+		done
+
+		rm -f "${domainlinepart}.${_i}.conf"
+		((count++))
+	done
 fi
 
 }
