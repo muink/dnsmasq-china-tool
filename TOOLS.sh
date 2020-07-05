@@ -21,6 +21,7 @@ PARTINDEX=.index
 MAINLIST="$MAINDOMAIN $CDNLIST $NSBLACK $NSWHITE"
 
 CURRENTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#CURRENTDIR="/etc/dnsmasq-china-tool"
 SRCDIR="$CURRENTDIR/Source"
 CUSTOMDIR="$CURRENTDIR/Custom"
 WORKDIR="$CURRENTDIR/Workshop"
@@ -406,4 +407,12 @@ if [ "$partcount" -gt "0" ]; then
 fi
 
 }
+
+
+
+
+
+# main
+[ ! -e "$SRCDIR/$MAINDOMAIN" -o ! -e "$SRCDIR/$CNROUTE" ] && download_sources && update_rules
+[ ! -e "$CURRENTDIR/$MAINDOMAIN.base" ] && update_sources && update_rules
 
