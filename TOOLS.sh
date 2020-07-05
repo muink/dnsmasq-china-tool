@@ -105,10 +105,10 @@ local remainder=$[ $totalline % $lineperfile ]
 	for _count in $(seq $[ 1 + $indexcount ] $[ $filescount + $indexcount ]); do
 		local basepoint=$[ $[ $_count - 1 ] * $lineperfile + 1 ]
 		local endpoint=$[ $[ $_count - 1 ] * $lineperfile + $lineperfile ]
-		sed -En "$basepoint,$endpoint s|^server=/(.+)/[0-9\.]+$|\1| p" "$srcdomain" > "${domainlinepart}.${_count}.conf"
+		sed -En "$basepoint,$endpoint s|^server=/(.+)/[0-9\.]+.*$|\1| p" "$srcdomain" > "${domainlinepart}.${_count}.conf"
 	done
 	if [ "$remainder" -gt "0" ]; then
-		sed -En "$[ $[ $filescount + $indexcount ] * $lineperfile + 1 ],$ s|^server=/(.+)/[0-9\.]+$|\1| p" "$srcdomain" > "${domainlinepart}.$[ $filescount + $indexcount + 1 ].conf"
+		sed -En "$[ $[ $filescount + $indexcount ] * $lineperfile + 1 ],$ s|^server=/(.+)/[0-9\.]+.*$|\1| p" "$srcdomain" > "${domainlinepart}.$[ $filescount + $indexcount + 1 ].conf"
 		let filescount+=1
 	fi
 	echo "$[ $filescount + $indexcount ]" > "$index"
@@ -228,7 +228,7 @@ if   [ "$1" == "" ]; then
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
 			#echo "$line" | xargs dig @$dns -t ns +short #|
 			#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-			dig $line @$dns +trace +tries=$retry | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ev "^\.\s|^[a-zA-Z]+\.\s" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+			dig $line @$dns +trace +tries=$retry | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$line" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 		fi
 	done
 else
@@ -236,7 +236,7 @@ else
 	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <tld> requires a valid argument'; return 1; fi
 	#echo "$tld" | xargs dig @$dns -t ns +short #|
 	#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-	dig $tld @$dns +trace +tries=$retry | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ev "^\.\s|^[a-zA-Z]+\.\s" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+	dig $tld @$dns +trace +tries=$retry | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 fi
 
 # test_tld=(nc.jx.cn weibo.com sina.com.cn yahoo.co.jp sgnic.sg bing.net cdn30.com youngfunding.co.uk right.com.cn nintendo.co.jp steampowered.com taobao.com a.shifen.com baidu.com bilibili.com longwin.com.tw k12.ma.us)
