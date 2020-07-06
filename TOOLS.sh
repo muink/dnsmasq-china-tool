@@ -1,5 +1,5 @@
 #!/bin/bash
-# depend coreutils-cksum
+# dependent: bash curl unzip coreutils-cksum bind-dig diffutils
 
 # init
 DCL='https://github.com/felixonmars/dnsmasq-china-list/archive/master.zip'
@@ -78,8 +78,8 @@ else
 	cp -f "$srcdomain" "$outdomain"
 fi
 
+cat "$outdomain" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$outdomain"
 cp -f "$srcdomain" "$basedomain"
-sort -u "$outdomain" -o "$outdomain"
 
 }
 
@@ -119,7 +119,7 @@ local remainder=$[ $totalline % $lineperfile ]
 # rand_num <min> <max> [<rounds>]
 rand_num() {
 if   [ -z "$3" -o "$[ $3 + 1 ]" -eq "1" ]; then local rounds=1;
-elif [ "$3" -gt "$2" ]; then local rounds=$2;
+elif [ "$3" -gt "$[ $2 - $1 ]" ]; then seq "$1" "$2"; return 0;
 else local rounds=$3; fi
 local min=
 local max=
