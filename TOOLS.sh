@@ -17,7 +17,7 @@ UNVERIFIEDNS=unverified-ns.txt
 CDNLIST=cdn-testlist.txt
 NSBLACK=ns-blacklist.txt
 NSWHITE=ns-whitelist.txt
-CNROUTE=cnrouteing.txt
+CNROUTE=cnrouting.txt
 PARTINDEX=.index
 MAINLIST="$MAINDOMAIN $CDNLIST $NSBLACK $NSWHITE"
 
@@ -41,21 +41,27 @@ update_rules
 
 # donaload CN CIDR
 rm -f "$CNROUTE" 2>/dev/null
-curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv "china_ip_list.txt" "$CNROUTE"
-#curl -sSL -o data.zip "$CZIP" && unzip -joq data.zip */special/china.txt && mv "china.txt" "$CNROUTE"
+curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv "china_ip_list.txt" "$CNROUTE" && echo >> "$CNROUTE"
+curl -sSL -o data.zip "$CZIP" && unzip -joq data.zip */*/special/china.txt && cat "china.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
 #curl -sSL -o data.zip "$COIP" && unzip -joq data.zip */china.txt && mv "china.txt" "$CNROUTE"
 #sort -t'.' -nk1,1 -rnk2,2 -rnk3,3 -rk4,4 "$CNROUTE" -o "$CNROUTE"
+curl -sSL -o data.zip "$CZIP" && unzip -joq data.zip */*/country/HK.txt && cat "HK.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
 
 rm -f data.zip
+grep '[^[:space:]]' "$CNROUTE" | grep -v '#' | sort -uo "$CNROUTE"
+sort -n -t'.' -k1,1 -k2,2 -k3,3 -k4,4 "$CNROUTE" -o "$CNROUTE"
 
 popd >/dev/null
 }
 
 # update rules
 update_rules() {
-#[ -f "$CUSTOMDIR/$CDNLIST" ] && sort -m "$SRCDIR/$CDNLIST" "$CUSTOMDIR/$CDNLIST" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$SRCDIR/$CDNLIST"
-[ -f "$CUSTOMDIR/$NSWHITE" ] && sort -m "$SRCDIR/$NSWHITE" "$CUSTOMDIR/$NSWHITE" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$SRCDIR/$NSWHITE"
-[ -f "$CUSTOMDIR/$NSBLACK" ] && sort -m "$SRCDIR/$NSBLACK" "$CUSTOMDIR/$NSBLACK" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$SRCDIR/$NSBLACK"
+echo >> "$SRCDIR/$NSWHITE"
+echo >> "$SRCDIR/$NSBLACK"
+[ -f "$CUSTOMDIR/$NSWHITE" ] && sort -m "$SRCDIR/$NSWHITE" "$CUSTOMDIR/$NSWHITE" | grep -v '#' | sort -u -o "$SRCDIR/$NSWHITE"
+[ -f "$CUSTOMDIR/$NSBLACK" ] && sort -m "$SRCDIR/$NSBLACK" "$CUSTOMDIR/$NSBLACK" | grep -Ev '#|status: NXDOMAIN' | sort -u -o "$SRCDIR/$NSBLACK"
+cat "$SRCDIR/$NSWHITE" | grep '[^[:space:]]' | grep -v '#' | sed -E "s|^\.|\\\.|; s|([^\\])\.|\1\\\.|g" | sort -u -o "$SRCDIR/$NSWHITE"
+cat "$SRCDIR/$NSBLACK" | grep '[^[:space:]]' | grep -v '#' | sed -E "s|^\.|\\\.|; s|([^\\])\.|\1\\\.|g" | sort -u -o "$SRCDIR/$NSBLACK"
 
 }
 
@@ -78,6 +84,7 @@ else
 	cp -f "$srcdomain" "$outdomain"
 fi
 
+cat "$patch" >> "$outdomain"
 cat "$outdomain" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$outdomain"
 cp -f "$srcdomain" "$basedomain"
 
