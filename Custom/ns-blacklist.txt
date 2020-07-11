@@ -1,9 +1,11 @@
 # General
-.steampowered.com.
-.samsung.com.
-.gigabyte.com.
 .mediatek.com.
 .foxconn.com.
+.steampowered.com.
+.playstation.net.
+.gigabyte.com.
+.samsung.com.
+.samsungapps.com.
 
 # CDN DNS
 .akadns.net.

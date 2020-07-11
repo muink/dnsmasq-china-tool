@@ -239,7 +239,7 @@
 .3366img.com.
 #乐道互动
 .ledaolink.cn.
-#17173
+#17173智游网络
 .17173.com.
 #斗鱼
 .douyuscdn.com.
@@ -287,6 +287,7 @@
 .idcc.cn.
 #北京蓝汛
 .chinacache.com.
+.chinacache.net.
 #花生壳 上海贝锐
 .oray.com.
 .dnsoray.net.
@@ -344,6 +345,12 @@
 .aqyun.com.
 #济丰寰亚
 .asiacorp.net.
+#金鸿（海南）电子竞技 DYNADOT LLC
+.ns-google.com.
+#Domains By Proxy, LLC
+.dnsapple.com.
+.dnsapple.net.
+.dnsapple.ne.
 #
 .95ns.net.
 .95ns.com.
@@ -675,6 +682,8 @@ ns1.ctycdn.com.
 ns2.ctycdn.com.
 ns3.ctycdn.com.
 gtm1600.cucc.dwstock.com.
+vip1.cupdns.com.
+vip2.cupdns.com.
 ns1.cusdvs.net.
 ns2.cusdvs.net.
 ns3.cusdvs.net.
