@@ -73,6 +73,9 @@ update_sources() {
 local srcdomain="$SRCDIR/$MAINDOMAIN"
 local outdomain="$CURRENTDIR/$MAINDOMAIN"
 local basedomain="$CURRENTDIR/$MAINDOMAIN.base"
+local basedate="$CURRENTDIR/.basedate"
+
+local srcdate="$(stat -c '%y' "$srcdomain" | cut -f1 -d' ')"
 
 mkdir "$CUSTOMDIR" 2>/dev/null
 local patch="$CUSTOMDIR/$MAINDOMAIN"
@@ -90,6 +93,7 @@ fi
 cat "$patch" >> "$outdomain"
 cat "$outdomain" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$outdomain"
 cp -f "$srcdomain" "$basedomain"
+echo "$srcdate" > "$basedate"
 
 }
 
@@ -433,7 +437,40 @@ fi
 
 }
 
+# show_status
+show_status() {
+local srcdomain="$SRCDIR/$MAINDOMAIN"
+local basedate="$CURRENTDIR/.basedate"
+local patch="$CUSTOMDIR/$MAINDOMAIN"
 
+local srcdate="$(stat -c '%y' "$srcdomain" | cut -f1 -d' ')"
+local basedate="$(cat "$basedate")"
+local confcount="$[ $(ls -1 "$WORKDIR/" | grep -E "\.conf$" | sed -n '$=') + 0 ]"
+local delline="$[ $(sed -n '$=' "$patch.del" 2>/dev/null) + 0 ]"
+
+echo 
+echo "Download Date: $srcdate    Local Date: $basedate    Unverified Count: $confcount    Unapplied changes: $delline"
+echo 
+echo Available commands:
+echo 
+echo "  download_sources"
+echo "  update_rules"
+echo "  update_sources"
+echo "  verify_domain [<rounds>]"
+echo "  commit_changes"
+echo 
+echo "  tldextract <url or rawdomain> e.g. https://www.taobao.com/"
+echo "  get_nsdomain <tld> e.g. taobao.com"
+echo 
+echo "  check_cn_ip <ip>"
+echo "  check_nocn_domain <domain>  e.g. www.taobao.com"
+echo 
+echo "  check_cdn <tld> e.g. taobao.com"
+echo "  check_white <nsdomain> e.g. ns4.taobao.com."
+echo "  check_black <nsdomain> e.g. ns4.taobao.com."
+echo 
+
+}
 
 
 
