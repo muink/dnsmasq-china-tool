@@ -13,10 +13,13 @@ LINEPERPART=200
 #DIGTCP=+tcp
 
 MAINDOMAIN=accelerated-domains.china.conf
+UNVERIFIEDDOMAIN=unverified-domain.txt
 UNVERIFIEDNS=unverified-ns.txt
 CDNLIST=cdn-testlist.txt
 NSBLACK=ns-blacklist.txt
 NSWHITE=ns-whitelist.txt
+DOMAINBLACK=domain-blacklist.txt
+DOMAINWHITE=domain-whitelist.txt
 CNROUTE=cnrouting.txt
 PARTINDEX=.index
 MAINLIST="$MAINDOMAIN $CDNLIST $NSBLACK $NSWHITE"
@@ -385,6 +388,9 @@ local patch="$CUSTOMDIR/$MAINDOMAIN"
 local unverifiedns="$CUSTOMDIR/$UNVERIFIEDNS"
 local unverifieddomain="$CUSTOMDIR/$UNVERIFIEDDOMAIN"
 
+local domainblk="$CUSTOMDIR/$DOMAINBLACK"
+local domainwit="$CUSTOMDIR/$DOMAINWHITE"
+
 
 echo "$[ $(ls -1 "$workidir/" | sed -En "s|^.+\.([0-9]+)\.conf$|\1| p" | sort -rn | sed -n '1p') + 0 ]" > "$index" # update .index count
 
@@ -404,11 +410,20 @@ if [ "$partcount" -gt "0" ]; then
 			echo $_l: $tld
 			echo "$tld" | grep -E "\.?cn\.?$|\.top\.?$" >/dev/null && continue
 			check_cdn "$tld" >/dev/null && continue
+
+			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" == "" ]; then
+			#NS
 			nslist="$(get_nsdomain "$tld" | xargs)"
 				[ "$nslist" == "" ] && echo "$tld" >> "$patch.del" && continue
 				check_white "$nslist" >/dev/null && continue
 				check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
 			echo "${tld}:${nslist}" >> "$unverifiedns"
+			else
+			#DOMAIN
+				echo "$tld" | grep -Ef "$domainwit" >/dev/null && continue
+				echo "$tld" | grep -Ef "$domainblk" >/dev/null && echo "$tld" >> "$patch.del" && continue
+				echo "$tld" >> "$unverifieddomain"
+			fi
 		done
 
 		rm -f "${domainlinepart}.${_i}.conf"
