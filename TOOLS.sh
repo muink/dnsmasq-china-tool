@@ -81,8 +81,8 @@ mkdir "$CUSTOMDIR" 2>/dev/null
 local patch="$CUSTOMDIR/$MAINDOMAIN"
 
 if [ -e "$basedomain" ]; then
-	diff -aZBN "$basedomain" "$srcdomain" | sed -n "/^< / {s|^< || p}" >> "$patch.del"
 	diff -aZBN "$basedomain" "$srcdomain" | sed -n "/^> / {s|^> || p}" > "/tmp/$MAINDOMAIN.add"
+	diff -aZBN "$basedomain" "$srcdomain" | sed -n "/^< / {s|^< || p}" | grep -vf "/tmp/$MAINDOMAIN.add" | sed "s|^server=/||; s|/[0-9\.]\+.*$||" >> "$patch.del"
 	cut_srcdomain "/tmp/$MAINDOMAIN.add" # generate new conf part file
 	cat "/tmp/$MAINDOMAIN.add" >> "$outdomain"
 else
@@ -90,7 +90,6 @@ else
 	cp -f "$srcdomain" "$outdomain"
 fi
 
-cat "$patch" >> "$outdomain"
 cat "$outdomain" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$outdomain"
 cp -f "$srcdomain" "$basedomain"
 echo "$srcdate" > "$basedate"
@@ -417,11 +416,11 @@ if [ "$partcount" -gt "0" ]; then
 
 			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" == "" ]; then
 			#NS
-			nslist="$(get_nsdomain "$tld" | xargs)"
-				[ "$nslist" == "" ] && echo "$tld" >> "$patch.del" && continue
-				check_white "$nslist" >/dev/null && continue
-				check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
-			echo "${tld}:${nslist}" >> "$unverifiedns"
+				nslist="$(get_nsdomain "$tld" | xargs)"
+					[ "$nslist" == "" ] && echo "$tld" >> "$patch.del" && continue
+					check_white "$nslist" >/dev/null && continue
+					check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
+				echo "${tld}:${nslist}" >> "$unverifiedns"
 			else
 			#DOMAIN
 				echo "$tld" | grep -Ef "$domainwit" >/dev/null && continue
@@ -434,6 +433,23 @@ if [ "$partcount" -gt "0" ]; then
 		((count++))
 	done
 fi
+
+}
+
+# commit_changes
+commit_changes() {
+local patch="$CUSTOMDIR/$MAINDOMAIN"
+local outdomain="$CURRENTDIR/$MAINDOMAIN"
+
+local delline="$[ $(sed -n '$=' "$patch.del" 2>/dev/null) + 0 ]"
+
+if [ "$delline" -gt "0" ]; then
+	sed -E "s|^([^#])|/\1|; s|([^0-9])$|\1/|; s|([^\\])\.|\1\\\.|g" "$patch.del" > "/tmp/$MAINDOMAIN.del"
+	grep -vf "/tmp/$MAINDOMAIN.del" "$outdomain" | grep '[^[:space:]]' | grep -v '#' | sort -u -o "$outdomain"
+	rm -f "$patch.del"
+fi
+
+cat "$patch" >> "$outdomain"
 
 }
 
