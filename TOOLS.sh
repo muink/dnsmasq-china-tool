@@ -1,5 +1,5 @@
 #!/bin/bash
-# dependent: bash curl unzip coreutils-cksum bind-dig diffutils
+# dependent: bash curl unzip coreutils-cksum bind-dig diffutils coreutils-stat
 
 # init
 DCL='https://github.com/felixonmars/dnsmasq-china-list/archive/master.zip'
@@ -29,6 +29,9 @@ CURRENTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRCDIR="$CURRENTDIR/Source"
 CUSTOMDIR="$CURRENTDIR/Custom"
 WORKDIR="$CURRENTDIR/Workshop"
+
+_FUNCTION="$1"; shift
+# _PARAMETERS: "$@"
 
 
 # sub function
@@ -395,6 +398,7 @@ local domainblk="$CUSTOMDIR/$DOMAINBLACK"
 local domainwit="$CUSTOMDIR/$DOMAINWHITE"
 
 
+update_rules
 echo "$[ $(ls -1 "$workidir/" | sed -En "s|^.+\.([0-9]+)\.conf$|\1| p" | sort -rn | sed -n '1p') + 0 ]" > "$index" # update .index count
 
 if [ "$partcount" -gt "0" ]; then
@@ -490,7 +494,10 @@ echo
 
 
 
-# main
-[ ! -e "$SRCDIR/$MAINDOMAIN" -o ! -e "$SRCDIR/$CNROUTE" ] && download_sources && update_rules
-[ ! -e "$CURRENTDIR/$MAINDOMAIN.base" ] && update_sources && update_rules
+# MAIN
+[ ! -e "$SRCDIR/$MAINDOMAIN" -o ! -e "$SRCDIR/$CNROUTE" ] && download_sources
+[ ! -e "$CURRENTDIR/$MAINDOMAIN.base" ] && update_sources
 
+[ -z "$_FUNCTION" ] && show_status
+
+$_FUNCTION "$@"
