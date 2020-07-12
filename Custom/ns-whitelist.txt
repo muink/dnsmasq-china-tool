@@ -1717,3 +1717,7 @@ ns1.zsgoodlighting.com.
 ns2.zsgoodlighting.com.
 ns1.ztdad.com.
 ns2.ztdad.com.
+ns1.22-dns.com.
+ns2.22-dns.com.
+ns3.22-dns.net.
+ns8.22-dns.net.
