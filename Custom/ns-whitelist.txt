@@ -1,6 +1,5 @@
 # 公共事业
 .cn.
-.hk.
 .china.com.
 .gov.cn.
 .gov.com.cn.

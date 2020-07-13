@@ -1,5 +1,4 @@
 \bcn\b
-\bhk\b
 \bcncdn\b
 \bchina\b
 \bshanghai\b
