@@ -125,7 +125,7 @@ local remainder=$[ $totalline % $lineperfile ]
 		sed -En "$basepoint,$endpoint s|^server=/(.+)/[0-9\.]+.*$|\1| p" "$srcdomain" > "${domainlinepart}.${_count}.conf"
 	done
 	if [ "$remainder" -gt "0" ]; then
-		sed -En "$[ $[ $filescount + $indexcount ] * $lineperfile + 1 ],$ s|^server=/(.+)/[0-9\.]+.*$|\1| p" "$srcdomain" > "${domainlinepart}.$[ $filescount + $indexcount + 1 ].conf"
+		sed -En "$[ $filescount * $lineperfile + 1 ],$ s|^server=/(.+)/[0-9\.]+.*$|\1| p" "$srcdomain" > "${domainlinepart}.$[ $filescount + $indexcount + 1 ].conf"
 		let filescount+=1
 	fi
 	echo "$[ $filescount + $indexcount ]" > "$index"
