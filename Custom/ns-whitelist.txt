@@ -153,6 +153,8 @@
 .nease.net.
 .ntes53.com.
 .yodao.com.
+#字节跳动
+.toutiao.com.
 #吡哩吡哩
 .hdslb.com.
 .hdslb.net.
@@ -342,6 +344,9 @@
 .98mi.com.
 #安全云 知道创宇
 .aqyun.com.
+#俊网科技
+.tohosting.net.
+.tohosting.com.
 #济丰寰亚
 .asiacorp.net.
 #金鸿（海南）电子竞技 DYNADOT LLC
