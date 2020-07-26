@@ -207,7 +207,8 @@ ippart4=$(echo "$ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\4| p
 tldextract() {
 local dns=$CNDNS
 local timout=1
-local retry=3
+local tries=1
+local retry=2
 
 local domain
 local line
@@ -216,14 +217,14 @@ if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		line="$(echo "$line" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
 		if [ ! "$line" == "" ]; then
-			dig $line @$dns +trace +timeout=$timout +tries=$retry $DIGTCP | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+			dig $line @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
 			grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev | tr 'A-Z' 'a-z' # >> Multiple values
 		fi
 	done
 else
 	domain="$(echo "$1" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
 	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <domain> requires a valid argument'; return 1; fi
-	dig $domain @$dns +trace +timeout=$timout +tries=$retry $DIGTCP | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+	dig $domain @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
 	grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev | tr 'A-Z' 'a-z' # >> Multiple values
 	# sort reference: https://segmentfault.com/q/1010000000665713/a-1020000013574021
 fi
@@ -237,7 +238,8 @@ fi
 get_nsdomain() {
 local dns=$CNDNS
 local timout=1
-local retry=3
+local tries=1
+local retry=2
 
 local tld
 local line
@@ -247,7 +249,7 @@ if   [ "$1" == "" ]; then
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
 			#echo "$line" | xargs dig @$dns -t ns +short $DIGTCP #|
 			#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-			dig $line @$dns +trace +timeout=$timout +tries=$retry $DIGTCP | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$line" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+			dig $line @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$line" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 		fi
 	done
 else
@@ -255,7 +257,7 @@ else
 	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <tld> requires a valid argument'; return 1; fi
 	#echo "$tld" | xargs dig @$dns -t ns +short $DIGTCP #|
 	#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-	dig $tld @$dns +trace +timeout=$timout +tries=$retry $DIGTCP | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+	dig $tld @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 fi
 
 # test_tld=(nc.jx.cn weibo.com sina.com.cn yahoo.co.jp sgnic.sg bing.net cdn30.com youngfunding.co.uk right.com.cn nintendo.co.jp steampowered.com taobao.com a.shifen.com baidu.com bilibili.com longwin.com.tw k12.ma.us)
@@ -421,7 +423,7 @@ if [ "$partcount" -gt "0" ]; then
 			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" == "" ]; then
 			#NS
 				nslist="$(get_nsdomain "$tld" | xargs)"
-					[ "$nslist" == "" ] && echo "$tld" >> "$patch.del" && continue
+					[ "$nslist" == "" ] && echo "$tld" >> "$unverifiedns" && continue
 					check_white "$nslist" >/dev/null && continue
 					check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
 				echo "${tld}:${nslist}" >> "$unverifiedns"
@@ -462,6 +464,7 @@ show_status() {
 local srcdomain="$SRCDIR/$MAINDOMAIN"
 local basedate="$CURRENTDIR/.basedate"
 local patch="$CUSTOMDIR/$MAINDOMAIN"
+[ -d "$WORKDIR" ] || mkdir "$WORKDIR"
 
 local srcdate="$(stat -c '%y' "$srcdomain" | cut -f1 -d' ')"
 local basedate="$(cat "$basedate")"
