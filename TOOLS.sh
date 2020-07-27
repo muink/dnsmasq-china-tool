@@ -13,6 +13,7 @@ LINEPERPART=200
 #DIGTCP=+tcp
 
 MAINDOMAIN=accelerated-domains.china.conf
+INVALIDREVERIFY=invalid-reverify.txt
 UNVERIFIEDDOMAIN=unverified-domain.txt
 UNVERIFIEDNS=unverified-ns.txt
 CDNLIST=cdn-testlist.txt
@@ -393,6 +394,7 @@ local partcount=$[ $(ls -1 "$workidir/" | grep -E "\.conf$" | sed -n '$=') + 0 ]
 
 # Custom
 local patch="$CUSTOMDIR/$MAINDOMAIN"
+local invalidreverify="$CUSTOMDIR/$INVALIDREVERIFY"
 local unverifiedns="$CUSTOMDIR/$UNVERIFIEDNS"
 local unverifieddomain="$CUSTOMDIR/$UNVERIFIEDDOMAIN"
 
@@ -420,19 +422,18 @@ if [ "$partcount" -gt "0" ]; then
 			echo "$tld" | grep -E "\.?cn\.?$|\.top\.?$" >/dev/null && continue
 			check_cdn "$tld" >/dev/null && continue
 
-			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" == "" ]; then
-			#NS
-				nslist="$(get_nsdomain "$tld" | xargs)"
-					[ "$nslist" == "" ] && echo "$tld" >> "$unverifiedns" && continue
-					check_white "$nslist" >/dev/null && continue
-					check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
-				echo "${tld}:${nslist}" >> "$unverifiedns"
-			else
+			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" ]; then
 			#DOMAIN
 				echo "$tld" | grep -Ef "$domainwit" >/dev/null && continue
 				echo "$tld" | grep -Ef "$domainblk" >/dev/null && echo "$tld" >> "$patch.del" && continue
-				echo "$tld" >> "$unverifieddomain"
+				[ "$(tldextract "$tld" | grep "$tld")" == "" ] && echo "$tld" >> "$unverifieddomain" && continue #verify domain or sld
 			fi
+			#NS
+			nslist="$(get_nsdomain "$tld" | xargs)"
+				[ "$nslist" == "" ] && echo "$tld" >> "$invalidreverify" && continue
+				check_white "$nslist" >/dev/null && continue
+				check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
+			echo "${tld}:${nslist}" >> "$unverifiedns"
 		done
 
 		rm -f "${domainlinepart}.${_i}.conf"
