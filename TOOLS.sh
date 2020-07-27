@@ -14,6 +14,7 @@ LINEPERPART=200
 
 MAINDOMAIN=accelerated-domains.china.conf
 INVALIDREVERIFY=invalid-reverify.txt
+POISONORINVALID=poison-or-invalid.txt
 UNVERIFIEDDOMAIN=unverified-domain.txt
 UNVERIFIEDNS=unverified-ns.txt
 CDNLIST=cdn-testlist.txt
@@ -394,6 +395,7 @@ local partcount=$[ $(ls -1 "$workidir/" | grep -E "\.conf$" | sed -n '$=') + 0 ]
 
 # Custom
 local patch="$CUSTOMDIR/$MAINDOMAIN"
+local poisonorinvalid="$CUSTOMDIR/$POISONORINVALID"
 local invalidreverify="$CUSTOMDIR/$INVALIDREVERIFY"
 local unverifiedns="$CUSTOMDIR/$UNVERIFIEDNS"
 local unverifieddomain="$CUSTOMDIR/$UNVERIFIEDDOMAIN"
@@ -414,13 +416,15 @@ if [ "$partcount" -gt "0" ]; then
 	local nslist
 
 	for _i in $pickdindex; do
-		echo "rounds: $count/$rounds  index: $_i"
+		echo "rounds: $count/$rounds  index: $_i"  lines: $[ $(sed -n '$=' "${domainlinepart}.${_i}.conf") + 0 ]
 
 		for _l in $(seq 1 $[ $(sed -n '$=' "${domainlinepart}.${_i}.conf") + 0 ]); do
 			tld="$(sed -n "$_l p" "${domainlinepart}.${_i}.conf")"
-			echo $_l: $tld
+			#echo $_l: $tld
+			[ "$[ $_l % 10 ]" -eq "0" ] && echo -n "${_l}.. "
 			echo "$tld" | grep -E "\.?cn\.?$|\.top\.?$" >/dev/null && continue
 			check_cdn "$tld" >/dev/null && continue
+			echo "$tld" | grep -Ef "$poisonorinvalid" >/dev/null && echo "$tld" >> "$patch.del" && continue
 
 			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" ]; then
 			#DOMAIN

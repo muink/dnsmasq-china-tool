@@ -28,3 +28,6 @@ lx\.cok\.elexapp\.com
 lx2\.cok\.elexapp\.com
 lx3\.cok\.elexapp\.com
 time\.izatcloud\.net
+h3c\.com\.hk
+hao123\.com\.sg
+tencent\.com\.hk
