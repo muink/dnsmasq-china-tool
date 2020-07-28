@@ -3,6 +3,7 @@
 CURRENTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $CURRENTDIR
 
+Repo='muink/dnsmasq-china-tool'
 Origin='accelerated-domains.china.conf'
 Clash='accelerated-domains.china.yml'
 SwitchyOmega='accelerated-domains.china.sorl'
@@ -12,7 +13,7 @@ SwitchyOmega='accelerated-domains.china.sorl'
 # Clash
 cat << EOF > $Clash
 # domain
-# Source: https://github.com/muink/dnsmasq-china-tool/blob/list/accelerated-domains.china.yaml
+# Source: https://github.com/$Repo/blob/list/$Clash
 # Last Modified: `date -u '+%F %T %Z'`
 payload:
 EOF
@@ -27,7 +28,7 @@ cat << EOF > $SwitchyOmega
 ! Title: china-dnsmasq-tool
 ! Last Modified: `date -Ru`
 !
-! HomePage: https://github.com/muink/dnsmasq-china-tool
+! HomePage: https://github.com/$Repo
 ! License: MIT
 
 EOF
