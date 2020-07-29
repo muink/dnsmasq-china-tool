@@ -4,7 +4,8 @@
 # init
 DCL='https://github.com/felixonmars/dnsmasq-china-list/archive/master.zip'
 IPIP='https://github.com/17mon/china_ip_list/archive/master.zip'
-CZIP='https://github.com/metowolf/iplist/archive/master.zip'
+CZIP='https://github.com/metowolf/iplist/raw/master/data/special/china.txt'
+CZIPHK='https://github.com/metowolf/iplist/raw/master/data/country/HK.txt'
 COIP='https://github.com/gaoyifan/china-operator-ip/archive/ip-lists.zip'
 CNRU2='https://github.com/misakaio/chnroutes2/archive/master.zip'
 AUVPN='https://github.com/zealic/autorosvpn/archive/master.zip'
@@ -50,10 +51,10 @@ update_rules
 # donaload CN CIDR
 rm -f "$CNROUTE" 2>/dev/null
 curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv "china_ip_list.txt" "$CNROUTE" && echo >> "$CNROUTE"
-curl -sSL -o data.zip "$CZIP" && unzip -joq data.zip */*/special/china.txt && cat "china.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
+curl -sSL -o "china.txt" "$CZIP" && cat "china.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
 #curl -sSL -o data.zip "$COIP" && unzip -joq data.zip */china.txt && mv "china.txt" "$CNROUTE"
 #sort -t'.' -nk1,1 -rnk2,2 -rnk3,3 -rk4,4 "$CNROUTE" -o "$CNROUTE"
-curl -sSL -o data.zip "$CZIP" && unzip -joq data.zip */*/country/HK.txt && cat "HK.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
+curl -sSL -o "HK.txt" "$CZIPHK" && cat "HK.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
 
 rm -f data.zip
 grep '[^[:space:]]' "$CNROUTE" | grep -v '#' | sort -uo "$CNROUTE"
