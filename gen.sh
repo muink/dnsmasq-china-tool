@@ -18,7 +18,7 @@ cat << EOF > $Clash
 payload:
 EOF
 sed -E "s|/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|'|; s|server=/|  - '+.|" "$Origin" >> "$Clash"
-echo -e "\n" >> "$Clash"
+echo >> "$Clash"
 
 
 # SwitchyOmega

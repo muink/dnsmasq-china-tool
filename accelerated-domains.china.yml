@@ -1,6 +1,6 @@
 # domain
 # Source: https://github.com/muink/dnsmasq-china-tool/blob/list/accelerated-domains.china.yml
-# Last Modified: 2020-07-29 13:45:06 UTC
+# Last Modified: 2020-07-30 14:24:47 UTC
 payload:
   - '+.00.net'
   - '+.00000wg.com'
@@ -74084,5 +74084,4 @@ payload:
   - '+.zzzzhong.com'
   - '+.zzzzllee.com'
   - '+.zzzzmall.com'
--e 
 
