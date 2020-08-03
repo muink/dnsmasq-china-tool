@@ -280,6 +280,7 @@
 .alibabaonline.com.
 .aliyun-ns.com.
 .aliyun-dns.net.
+.hichina.com.
 #114DNS
 .114dns.com.
 .114dns.net.
