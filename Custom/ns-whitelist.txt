@@ -1016,6 +1016,8 @@ ns5.fspcdn.com.
 ns6.fspcdn.com.
 shawp0020.ftsfund.com.
 shawp0021.ftsfund.com.
+ns1.funnulldns.com.
+ns2.funnulldns.com.
 ns1.fute.com.
 ns2.fute.com.
 ns1.fwtrc.com.
