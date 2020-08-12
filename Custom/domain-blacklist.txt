@@ -56,3 +56,5 @@ blog\.anank\.ke
 cdn\.razersynapse\.com
 ups\.ksmobile\.net
 ws\.ksmobile\.net
+crl\.kaspersky\.com
+www\.kaspersky\.com
