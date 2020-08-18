@@ -104,9 +104,9 @@ echo "$srcdate" > "$basedate"
 
 # cut_srcdomain <becut>
 cut_srcdomain() {
-if   [ -z "$1" ]; then echo 'cut_srcdomain: The <becut> requires an argument'; return 1;
+if   [ -z "$1" ]; then >&2 echo 'cut_srcdomain: The <becut> requires an argument'; return 1;
 elif [ -f "$1" ]; then local srcdomain="$1";
-else echo 'cut_srcdomain: The <becut> parameter is invalid'; return 1; fi
+else >&2 echo 'cut_srcdomain: The <becut> parameter is invalid'; return 1; fi
 
 mkdir "$WORKDIR" 2>/dev/null
 local domainlinepart="$WORKDIR/${MAINDOMAIN%.*}"
@@ -174,13 +174,13 @@ fi
 find_in_cidr() {
 #	local initvar=(rules ip)
 #	for _var in "${initvar[@]}"; do
-#		if [ -z "$1" ]; then echo "find_in_cidr: The <$_var> requires an argument"; return 1;
+#		if [ -z "$1" ]; then >&2 echo "find_in_cidr: The <$_var> requires an argument"; return 1;
 #		else eval "local \$_var=\"\$1\"" && shift; fi
 #	done
 #
-#[ ! -f "$rules" ] && echo "find_in_cidr: The <cidrrules> parameter is invalid"; return 1
-#[ ! "$(echo "$ip" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ] && echo "find_in_cidr: The <ipaddress> parameter is invalid"; return 1
-#local maskgp=("$@"); #[ "${#arr[@]}" -eq "0" ] && echo "find_in_cidr: The <maskgroup> requires an array argument"; return 1
+#[ ! -f "$rules" ] && >&2 echo "find_in_cidr: The <cidrrules> parameter is invalid"; return 1
+#[ ! "$(echo "$ip" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ] && >&2 echo "find_in_cidr: The <ipaddress> parameter is invalid"; return 1
+#local maskgp=("$@"); #[ "${#arr[@]}" -eq "0" ] && >&2 echo "find_in_cidr: The <maskgroup> requires an array argument"; return 1
 
 
 ippart1=$(echo "$ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\1| p")
@@ -226,7 +226,7 @@ if   [ "$1" == "" ]; then
 	done
 else
 	domain="$(echo "$1" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
-	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <domain> requires a valid argument'; return 1; fi
+	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_white: The <domain> requires a valid argument'; return 1; fi
 	dig $domain @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
 	grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev | tr 'A-Z' 'a-z' # >> Multiple values
 	# sort reference: https://segmentfault.com/q/1010000000665713/a-1020000013574021
@@ -257,7 +257,7 @@ if   [ "$1" == "" ]; then
 	done
 else
 	tld="$1"
-	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <tld> requires a valid argument'; return 1; fi
+	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_white: The <tld> requires a valid argument'; return 1; fi
 	#echo "$tld" | xargs dig @$dns -t ns +short $DIGTCP #|
 	#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 	dig $tld @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
@@ -294,7 +294,7 @@ if   [ "$1" == "" ]; then
 	done
 else
 	ip="$1"
-	if [ "$(echo "${ip[0]}" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ]; then echo 'check_cn_ip: The <ipaddress> parameter is invalid'; return 1; fi
+	if [ "$(echo "${ip[0]}" | grep -E "^((2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})\.){3}(2(5[0-5]|[0-4][0-9])|[0-1]?[0-9]{1,2})$")" == "" ]; then >&2 echo 'check_cn_ip: The <ipaddress> parameter is invalid'; return 1; fi
 	find_in_cidr
 fi
 
@@ -315,7 +315,7 @@ if   [ "$1" == "" ]; then
 	done
 else
 	domain="$1"
-	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_nocn_domain: The <domain> requires a valid argument'; return 1; fi
+	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_nocn_domain: The <domain> requires a valid argument'; return 1; fi
 	[ "$(dig $domain @$dns +short $DIGTCP | grep -E "^[0-9\.]+" | check_cn_ip)" == "" ] && echo $domain # > $(date +%Y-%m-%d_%T)
 fi
 
@@ -336,7 +336,7 @@ if   [ "$1" == "" ]; then
 	done
 else
 	domain="$1"
-	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_cdn: The <domain> requires a valid argument'; return 1; fi
+	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_cdn: The <domain> requires a valid argument'; return 1; fi
 	[ ! "$(grep -E "\b${domain}$" "$cdnlist")" == "" ] && echo "$domain"
 fi
 
@@ -357,7 +357,7 @@ if   [ "$1" == "" ]; then
 	done
 else
 	nsdomain="$1"
-	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_white: The <nsdomain> requires a valid argument'; return 1; fi
+	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_white: The <nsdomain> requires a valid argument'; return 1; fi
 	echo "$nsdomain" | grep -f "$whitelist"
 fi
 
@@ -378,7 +378,7 @@ if   [ "$1" == "" ]; then
 	done
 else
 	nsdomain="$1"
-	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then echo 'check_black: The <nsdomain> requires a valid argument'; return 1; fi
+	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_black: The <nsdomain> requires a valid argument'; return 1; fi
 	echo "$nsdomain" | grep -f "$blacklist"
 fi
 
