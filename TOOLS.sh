@@ -27,6 +27,7 @@ CNROUTE=cnrouting.txt
 PARTINDEX=.index
 MAINLIST="$MAINDOMAIN $CDNLIST $NSBLACK $NSWHITE"
 
+TMPDIR="/tmp/DNSCNIAT"
 CURRENTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #CURRENTDIR="/etc/dnsmasq-china-tool"
 SRCDIR="$CURRENTDIR/Source"
@@ -42,21 +43,26 @@ _FUNCTION="$1"; shift
 download_sources() {
 mkdir "$SRCDIR" 2>/dev/null
 mkdir "$CUSTOMDIR" 2>/dev/null
+mkdir "$TMPDIR" 2>/dev/null
 pushd "$SRCDIR" >/dev/null
 
 # donwload dnsmasq-china-list/accelerated-domains.china.conf
-curl -sSL -o data.zip "$DCL" && unzip -joq data.zip $(echo $MAINLIST|sed -n 's|^|*/|; s| | */|g; p')
+curl -sSL -o data.zip "$DCL" && unzip -joq data.zip -d "$TMPDIR/"
+mv -f $(echo $MAINLIST|sed -n "s|^|$TMPDIR/|; s| | $TMPDIR/|g; p") $SRCDIR/
 update_rules
 
 # donaload CN CIDR
 rm -f "$CNROUTE" 2>/dev/null
-curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip */china_ip_list.txt && mv "china_ip_list.txt" "$CNROUTE" && echo >> "$CNROUTE"
+curl -sSL -o data.zip "$IPIP" && unzip -joq data.zip -d "$TMPDIR/" && mv -f "$TMPDIR/china_ip_list.txt" "$CNROUTE" && echo >> "$CNROUTE"
 curl -sSL -o "china.txt" "$CZIP" && cat "china.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
-#curl -sSL -o data.zip "$COIP" && unzip -joq data.zip */china.txt && mv "china.txt" "$CNROUTE"
+#curl -sSL -o data.zip "$COIP" && unzip -joq data.zip -d "$TMPDIR/" && mv -f "$TMPDIR/china.txt" "$CNROUTE"
 #sort -t'.' -nk1,1 -rnk2,2 -rnk3,3 -rk4,4 "$CNROUTE" -o "$CNROUTE"
 curl -sSL -o "HK.txt" "$CZIPHK" && cat "HK.txt" >> "$CNROUTE" && echo >> "$CNROUTE"
 
+rm -rf "$TMPDIR"
 rm -f data.zip
+rm -f china.txt
+rm -f HK.txt
 grep '[^[:space:]]' "$CNROUTE" | grep -v '#' | sort -uo "$CNROUTE"
 sort -n -t'.' -k1,1 -k2,2 -k3,3 -k4,4 "$CNROUTE" -o "$CNROUTE"
 
@@ -87,8 +93,8 @@ mkdir "$CUSTOMDIR" 2>/dev/null
 local patch="$CUSTOMDIR/$MAINDOMAIN"
 
 if [ -e "$basedomain" ]; then
-	diff -aZBN "$basedomain" "$srcdomain" | sed -n "/^> / {s|^> || p}" > "/tmp/$MAINDOMAIN.add"
-	diff -aZBN "$basedomain" "$srcdomain" | sed -n "/^< / {s|^< || p}" | grep -vf "/tmp/$MAINDOMAIN.add" | sed "s|^server=/||; s|/[0-9\.]\+.*$||" >> "$patch.del"
+	diff -aBN "$basedomain" "$srcdomain" | sed -n "/^> / {s|^> || p}" > "/tmp/$MAINDOMAIN.add"
+	diff -aBN "$basedomain" "$srcdomain" | sed -n "/^< / {s|^< || p}" | grep -vf "/tmp/$MAINDOMAIN.add" | sed "s|^server=/||; s|/[0-9\.]\+.*$||" >> "$patch.del"
 	cut_srcdomain "/tmp/$MAINDOMAIN.add" # generate new conf part file
 	cat "/tmp/$MAINDOMAIN.add" >> "$outdomain"
 else
