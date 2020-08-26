@@ -378,6 +378,8 @@
 .zwdns.com.
 #企联网 上海联网科贸有限公司
 .zndns.com.
+#DNS.COM 厦门帝恩思科技股份有限公司
+.dnsip.net.
 #
 .chndns.com.
 .95ns.net.
