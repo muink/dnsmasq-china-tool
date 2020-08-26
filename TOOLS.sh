@@ -15,7 +15,7 @@ LINEPERPART=200
 
 MAINDOMAIN=accelerated-domains.china.conf
 INVALIDREVERIFY=invalid-reverify.txt
-POISONORINVALID=poison-or-invalid.txt
+POISON=poison.txt
 UNVERIFIEDDOMAIN=unverified-domain.txt
 UNVERIFIEDNS=unverified-ns.txt
 CDNLIST=cdn-testlist.txt
@@ -273,6 +273,30 @@ fi
 
 }
 
+# pick_poison <tld>
+pick_poison(){
+local dns=$CNDNS
+local timeout=1
+local tries=1
+local retry=2
+
+local tld
+local line
+local timout=20
+if   [ "$1" == "" ]; then
+	while read -r -t$timout line; do
+		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
+			dig $line @$dns -t ns +trace +timeout=$timeout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\s(A|AAAA)\s.+$" | grep -Ei "^$line" | awk '{print $1}' | sort -u | tr 'A-Z' 'a-z' | sed 's|\.$||'
+		fi
+	done
+else
+	tld="$1"
+	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'pick_poison: The <tld> requires a valid argument'; return 1; fi
+	dig $tld @$dns -t ns +trace +timeout=$timeout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\s(A|AAAA)\s.+$" | grep -Ei "^$tld" | awk '{print $1}' | sort -u | tr 'A-Z' 'a-z' | sed 's|\.$||'
+fi
+
+}
+
 # check_cn_ip <ipaddress>
 # check_cn_ip 223.5.5.5 || echo false
 check_cn_ip() {
@@ -402,7 +426,7 @@ local partcount=$[ $(ls -1 "$workidir/" | grep -E "\.conf$" | sed -n '$=') + 0 ]
 
 # Custom
 local patch="$CUSTOMDIR/$MAINDOMAIN"
-local poisonorinvalid="$CUSTOMDIR/$POISONORINVALID"
+local poison="$CUSTOMDIR/$POISON"
 local invalidreverify="$CUSTOMDIR/$INVALIDREVERIFY"
 local unverifiedns="$CUSTOMDIR/$UNVERIFIEDNS"
 local unverifieddomain="$CUSTOMDIR/$UNVERIFIEDDOMAIN"
@@ -432,7 +456,7 @@ if [ "$partcount" -gt "0" ]; then
 			[ "$[ $_l % 10 ]" -eq "0" ] && echo -n "${_l}.. "
 			echo "$tld" | grep -Ei "\.?cn\.?$|\.top\.?$" >/dev/null && continue
 			check_cdn "$tld" >/dev/null && continue
-			echo "$tld" | grep -Eif "$poisonorinvalid" >/dev/null && echo "$tld" >> "$patch.del" && continue
+			echo "$tld" | grep -Eif "$poison" >/dev/null && echo "$tld" >> "$patch.del" && continue
 
 			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" ]; then
 			#DOMAIN
@@ -442,7 +466,10 @@ if [ "$partcount" -gt "0" ]; then
 			fi
 			#NS
 			nslist="$(get_nsdomain "$tld" | xargs)"
-				[ "$nslist" == "" ] && echo "$tld" >> "$invalidreverify" && continue
+				if [ "$nslist" == "" ]; then
+					[ -n "$(pick_poison "$tld")" ] && echo "${tld//./\\\.}" >> "$poison" && echo "$tld" >> "$patch.del" && continue
+					echo "$tld" >> "$invalidreverify" && continue
+				fi
 				check_white "$nslist" >/dev/null && continue
 				check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
 			echo "${tld}:${nslist}" >> "$unverifiedns"
@@ -497,6 +524,7 @@ echo "  commit_changes"
 echo 
 echo "  tldextract <url or rawdomain> e.g. https://www.taobao.com/"
 echo "  get_nsdomain <tld> e.g. taobao.com"
+echo "  pick_poison <tld> e.g. google.com"
 echo 
 echo "  check_cn_ip <ip>"
 echo "  check_nocn_domain <domain>  e.g. www.taobao.com"
