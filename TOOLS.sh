@@ -258,7 +258,7 @@ if   [ "$1" == "" ]; then
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
 			#echo "$line" | xargs dig @$dns -t ns +short $DIGTCP #|
 			#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-			dig $line @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$line" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+			dig $line @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ei "^$line" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 		fi
 	done
 else
@@ -266,7 +266,7 @@ else
 	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_white: The <tld> requires a valid argument'; return 1; fi
 	#echo "$tld" | xargs dig @$dns -t ns +short $DIGTCP #|
 	#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-	dig $tld @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -E "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+	dig $tld @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ei "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 fi
 
 # test_tld=(nc.jx.cn weibo.com sina.com.cn yahoo.co.jp sgnic.sg bing.net cdn30.com youngfunding.co.uk right.com.cn nintendo.co.jp steampowered.com taobao.com a.shifen.com baidu.com bilibili.com longwin.com.tw k12.ma.us)
@@ -429,14 +429,14 @@ if [ "$partcount" -gt "0" ]; then
 			tld="$(sed -n "$_l p" "${domainlinepart}.${_i}.conf")"
 			#echo $_l: $tld
 			[ "$[ $_l % 10 ]" -eq "0" ] && echo -n "${_l}.. "
-			echo "$tld" | grep -E "\.?cn\.?$|\.top\.?$" >/dev/null && continue
+			echo "$tld" | grep -Ei "\.?cn\.?$|\.top\.?$" >/dev/null && continue
 			check_cdn "$tld" >/dev/null && continue
-			echo "$tld" | grep -Ef "$poisonorinvalid" >/dev/null && echo "$tld" >> "$patch.del" && continue
+			echo "$tld" | grep -Eif "$poisonorinvalid" >/dev/null && echo "$tld" >> "$patch.del" && continue
 
 			if [ "$(echo "$tld" | grep -E "^[^\.]+(\.[^\.]+){2,}$")" ]; then
 			#DOMAIN
-				echo "$tld" | grep -Ef "$domainwit" >/dev/null && continue
-				echo "$tld" | grep -Ef "$domainblk" >/dev/null && echo "$tld" >> "$patch.del" && continue
+				echo "$tld" | grep -Eif "$domainwit" >/dev/null && continue
+				echo "$tld" | grep -Eif "$domainblk" >/dev/null && echo "$tld" >> "$patch.del" && continue
 				[ "$(tldextract "$tld" | grep "$tld")" == "" ] && echo "$tld" >> "$unverifieddomain" && continue #verify domain or sld
 			fi
 			#NS
