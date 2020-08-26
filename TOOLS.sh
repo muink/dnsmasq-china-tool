@@ -423,7 +423,8 @@ if [ "$partcount" -gt "0" ]; then
 	local nslist
 
 	for _i in $pickdindex; do
-		echo "rounds: $count/$rounds  index: $_i"  lines: $[ $(sed -n '$=' "${domainlinepart}.${_i}.conf") + 0 ]
+		echo -e "\nrounds: $count/$rounds  index: $_i"  lines: $[ $(sed -n '$=' "${domainlinepart}.${_i}.conf") + 0 ]
+		echo -n "   "
 
 		for _l in $(seq 1 $[ $(sed -n '$=' "${domainlinepart}.${_i}.conf") + 0 ]); do
 			tld="$(sed -n "$_l p" "${domainlinepart}.${_i}.conf")"
