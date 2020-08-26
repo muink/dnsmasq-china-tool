@@ -215,25 +215,25 @@ ippart4=$(echo "$ip" | sed -En "s|^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$|\4| p
 # echo "www.baidu.com" | tldextract | xargs
 tldextract() {
 local dns=$CNDNS
-local timout=1
+local timeout=1
 local tries=1
 local retry=2
 
 local domain
 local line
-local timeout=20
+local timout=20
 if   [ "$1" == "" ]; then
-	while read -r -t$timeout line; do
+	while read -r -t$timout line; do
 		line="$(echo "$line" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
 		if [ ! "$line" == "" ]; then
-			dig $line @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+			dig $line @$dns +trace +timeout=$timeout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
 			grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev | tr 'A-Z' 'a-z' # >> Multiple values
 		fi
 	done
 else
 	domain="$(echo "$1" | sed -En "s|^(https?://)?([^/]+).*$|\2| p")"
-	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_white: The <domain> requires a valid argument'; return 1; fi
-	dig $domain @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
+	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'tldextract: The <domain> requires a valid argument'; return 1; fi
+	dig $domain @$dns +trace +timeout=$timeout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | cut -f1 |
 	grep -Ev "^\.$|^[a-zA-Z]+\.$" | sort -u | sed -n "s|\.$|| p" | rev | sort -t'.' -rk1,2 | sort -t'.' -uk1,2 | rev | tr 'A-Z' 'a-z' # >> Multiple values
 	# sort reference: https://segmentfault.com/q/1010000000665713/a-1020000013574021
 fi
@@ -246,27 +246,27 @@ fi
 # echo "baidu.com" | get_nsdomain | xargs
 get_nsdomain() {
 local dns=$CNDNS
-local timout=1
+local timeout=1
 local tries=1
 local retry=2
 
 local tld
 local line
-local timeout=20
+local timout=20
 if   [ "$1" == "" ]; then
-	while read -r -t$timeout line; do
+	while read -r -t$timout line; do
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
 			#echo "$line" | xargs dig @$dns -t ns +short $DIGTCP #|
 			#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-			dig $line @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ei "^$line" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+			dig $line @$dns +trace +timeout=$timeout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ei "^$line" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 		fi
 	done
 else
 	tld="$1"
-	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_white: The <tld> requires a valid argument'; return 1; fi
+	if [ "$(echo "$tld" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'get_nsdomain: The <tld> requires a valid argument'; return 1; fi
 	#echo "$tld" | xargs dig @$dns -t ns +short $DIGTCP #|
 	#cut -f1 --complement -d'.' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
-	dig $tld @$dns +trace +timeout=$timout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ei "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
+	dig $tld @$dns +trace +timeout=$timeout +tries=$tries +retry=$retry $DIGTCP 2>/dev/null | grep -E "^.+\s[0-9]+\sIN\sNS\s.+$" | grep -Ei "^$tld" | awk '{print $5}' | sort -u | tr 'A-Z' 'a-z' # >> Multiple values
 fi
 
 # test_tld=(nc.jx.cn weibo.com sina.com.cn yahoo.co.jp sgnic.sg bing.net cdn30.com youngfunding.co.uk right.com.cn nintendo.co.jp steampowered.com taobao.com a.shifen.com baidu.com bilibili.com longwin.com.tw k12.ma.us)
