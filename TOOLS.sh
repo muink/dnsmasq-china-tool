@@ -454,7 +454,7 @@ if [ "$partcount" -gt "0" ]; then
 			tld="$(sed -n "$_l p" "${domainlinepart}.${_i}.conf")"
 			#echo $_l: $tld
 			[ "$[ $_l % 10 ]" -eq "0" ] && echo -n "${_l}.. "
-			echo "$tld" | grep -Ei "\.?cn\.?$|\.top\.?$" >/dev/null && continue
+			echo "$tld" | grep -Ei "\.?cn\.?$|\.?top\.?$" >/dev/null && continue
 			check_cdn "$tld" >/dev/null && continue
 			echo "$tld" | grep -Eif "$poison" >/dev/null && echo "$tld" >> "$patch.del" && continue
 
