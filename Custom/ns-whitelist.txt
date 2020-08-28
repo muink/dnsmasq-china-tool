@@ -274,6 +274,7 @@
 .yunjiasu-cdn.net.
 #腾讯云
 .tcloudscdn.net.
+.intlscdn.com.
 #华为云
 .huaweicloud-dns.net.
 #阿里巴巴
@@ -380,6 +381,11 @@
 .zndns.com.
 #DNS.COM 厦门帝恩思科技股份有限公司
 .dnsip.net.
+#xz域名平台 厦门点媒网络科技有限公司
+.xz.com.
+# 无锡卓旺网络科技有限公司
+.idc180.com.
+.52ig.net.
 #
 .chndns.com.
 .95ns.net.
@@ -1923,3 +1929,5 @@ ns1.zsgoodlighting.com.
 ns2.zsgoodlighting.com.
 ns1.ztdad.com.
 ns2.ztdad.com.
+dns3.0755ws.com.
+dns4.0755ws.com.
