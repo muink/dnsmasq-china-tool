@@ -1,3 +1,6 @@
+\.com\.tw
+\.com\.ru
+\.co\.kr
 \.akamai\.com
 \.akamai\.net
 -amazon\.com
