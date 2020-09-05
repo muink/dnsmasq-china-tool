@@ -361,13 +361,13 @@ local timeout=20
 if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
-			[ ! "$(grep -E "\b${line}$" "$cdnlist")" == "" ] && echo "$line"
+			[ ! "$(grep -Ei "\b${line}$" "$cdnlist")" == "" ] && echo "$line"
 		fi
 	done
 else
 	domain="$1"
 	if [ "$(echo "$domain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_cdn: The <domain> requires a valid argument'; return 1; fi
-	[ ! "$(grep -E "\b${domain}$" "$cdnlist")" == "" ] && echo "$domain"
+	[ ! "$(grep -Ei "\b${domain}$" "$cdnlist")" == "" ] && echo "$domain"
 fi
 
 }
@@ -382,13 +382,13 @@ local timeout=20
 if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
-			echo "$line" | grep -f "$whitelist"
+			echo "$line" | grep -if "$whitelist"
 		fi
 	done
 else
 	nsdomain="$1"
 	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_white: The <nsdomain> requires a valid argument'; return 1; fi
-	echo "$nsdomain" | grep -f "$whitelist"
+	echo "$nsdomain" | grep -if "$whitelist"
 fi
 
 }
@@ -403,13 +403,13 @@ local timeout=20
 if   [ "$1" == "" ]; then
 	while read -r -t$timeout line; do
 		if [ ! "$(echo "$line" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then
-			echo "$line" | grep -f "$blacklist"
+			echo "$line" | grep -if "$blacklist"
 		fi
 	done
 else
 	nsdomain="$1"
 	if [ "$(echo "$nsdomain" | sed -n "s|[ \t0-9\.]||g p")" == "" ]; then >&2 echo 'check_black: The <nsdomain> requires a valid argument'; return 1; fi
-	echo "$nsdomain" | grep -f "$blacklist"
+	echo "$nsdomain" | grep -if "$blacklist"
 fi
 
 }
@@ -467,7 +467,7 @@ if [ "$partcount" -gt "0" ]; then
 			#NS
 			nslist="$(get_nsdomain "$tld" | xargs)"
 				if [ "$nslist" == "" ]; then
-					[ -n "$(pick_poison "$tld")" ] && echo "${tld//./\\\.}" >> "$poison" && echo "$tld" >> "$patch.del" && continue
+					[ -n "$(pick_poison "$tld")" ] && echo "\\b${tld//./\\\.}" >> "$poison" && echo "$tld" >> "$patch.del" && continue
 					echo "$tld" >> "$invalidreverify" && continue
 				fi
 				check_white "$nslist" >/dev/null && continue
