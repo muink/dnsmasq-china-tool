@@ -386,6 +386,9 @@
 # 无锡卓旺网络科技有限公司
 .idc180.com.
 .52ig.net.
+# eName易名中国
+.ename-dns.com.
+.ename-dns.net.
 #
 .chndns.com.
 .95ns.net.
