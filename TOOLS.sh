@@ -474,6 +474,7 @@ if [ "$partcount" -gt "0" ]; then
 				check_black "$nslist" >/dev/null && echo "$tld" >> "$patch.del" && continue
 			echo "${tld}:${nslist}" >> "$unverifiedns"
 		done
+		echo ''
 
 		rm -f "${domainlinepart}.${_i}.conf"
 		((count++))
@@ -496,6 +497,7 @@ if [ "$delline" -gt "0" ]; then
 fi
 
 cat "$patch" >> "$outdomain"
+sort -u "$outdomain" -o "$outdomain"
 
 }
 
