@@ -93,6 +93,8 @@
 .baishangeek.com.
 #海信集团
 .hisense.com.
+#万达信息股份有限公司
+.wondersgroup.com.
 #四川长虹电器
 .changhong.com.
 #神州数码
@@ -132,6 +134,8 @@
 .cnmobile.net.
 .cnmobile.net.
 .cncnet.net.
+#云南联通
+.yncuc.net.
 .189works.com.
 .135-139.com.
 .139js.com.
@@ -149,6 +153,7 @@
 #京东
 .jdgslb.com.
 .jcloud-cdn.com.
+.jdcloudstatic.net.
 #网易
 .netease.com.
 .166.com.
@@ -265,6 +270,8 @@
 .9you.com.
 #九维网
 .9wee.net.
+# 优刻得云分发
+.ugslb.net.
 #
 .freebsdchina.org.
 .linfan.com.
@@ -274,6 +281,7 @@
 .yunjiasu-cdn.net.
 #腾讯云
 .tcloudscdn.net.
+.tcloudscdn.com.
 .intlscdn.com.
 #华为云
 .huaweicloud-dns.net.
@@ -305,6 +313,7 @@
 #北京蓝汛
 .chinacache.com.
 .chinacache.net.
+.ccgslb.com.
 #花生壳 上海贝锐
 .oray.com.
 .dnsoray.net.
@@ -389,6 +398,12 @@
 # eName易名中国
 .ename-dns.com.
 .ename-dns.net.
+# 四川域趣网络科技有限公司
+.diymysite.com.
+# GJCDN国际CDN免费全球网站加速
+.gjcdn.vip.
+# DvrDydns动态域名系统 深圳市同为数码科技股份有限公司
+.dvrdydns.com.
 #
 .chndns.com.
 .95ns.net.
@@ -1934,3 +1949,5 @@ ns1.ztdad.com.
 ns2.ztdad.com.
 dns3.0755ws.com.
 dns4.0755ws.com.
+ns1.yangyi02.com.
+ns2.yangyi02.com.

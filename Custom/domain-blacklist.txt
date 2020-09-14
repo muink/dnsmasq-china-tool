@@ -34,6 +34,7 @@
 \bwebview\.unityads\.unity3d\.com
 \bconfig\.unityads\.unity3d\.com
 \bimages\.benchmarkemail\.com
+\bctldl\.windowsupdate\.com
 \bdl\.ubnt\.com
 \bdl-origin\.ubnt\.com
 \bbj1\.api\.bing\.com
