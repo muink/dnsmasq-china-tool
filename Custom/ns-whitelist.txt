@@ -389,6 +389,8 @@
 # eName易名中国
 .ename-dns.com.
 .ename-dns.net.
+# 四川域趣网络科技有限公司
+.diymysite.com.
 #
 .chndns.com.
 .95ns.net.
