@@ -305,6 +305,7 @@
 #北京蓝汛
 .chinacache.com.
 .chinacache.net.
+.ccgslb.com.
 #花生壳 上海贝锐
 .oray.com.
 .dnsoray.net.
