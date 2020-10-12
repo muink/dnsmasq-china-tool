@@ -132,6 +132,8 @@
 .cnmobile.net.
 .cnmobile.net.
 .cncnet.net.
+#云南联通
+.yncuc.net.
 .189works.com.
 .135-139.com.
 .139js.com.
@@ -392,6 +394,8 @@
 .ename-dns.net.
 # 四川域趣网络科技有限公司
 .diymysite.com.
+# GJCDN国际CDN免费全球网站加速
+.gjcdn.vip.
 #
 .chndns.com.
 .95ns.net.
