@@ -151,6 +151,7 @@
 #京东
 .jdgslb.com.
 .jcloud-cdn.com.
+.jdcloudstatic.net.
 #网易
 .netease.com.
 .166.com.
@@ -267,6 +268,8 @@
 .9you.com.
 #九维网
 .9wee.net.
+# 优刻得云分发
+.ugslb.net.
 #
 .freebsdchina.org.
 .linfan.com.
