@@ -1947,3 +1947,5 @@ ns1.ztdad.com.
 ns2.ztdad.com.
 dns3.0755ws.com.
 dns4.0755ws.com.
+ns1.yangyi02.com.
+ns2.yangyi02.com.
