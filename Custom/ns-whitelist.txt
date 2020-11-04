@@ -93,6 +93,8 @@
 .baishangeek.com.
 #海信集团
 .hisense.com.
+#万达信息股份有限公司
+.wondersgroup.com.
 #四川长虹电器
 .changhong.com.
 #神州数码
