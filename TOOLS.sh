@@ -497,6 +497,7 @@ if [ "$delline" -gt "0" ]; then
 fi
 
 cat "$patch" >> "$outdomain"
+sort -u "$outdomain" -o "$outdomain"
 
 }
 
