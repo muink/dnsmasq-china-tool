@@ -354,6 +354,8 @@
 .dnsece.com
 #云帆加速
 .yfcdn.net.
+#云决科技（深圳）有限公司
+.willcdn.com.
 #容大互联
 .verydns.net.
 .veryns.com.
