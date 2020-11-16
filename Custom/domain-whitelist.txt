@@ -31,3 +31,9 @@
 \bh3c\.com\.hk
 \bhao123\.com\.sg
 \btencent\.com\.hk
+\b2-01-5830-0005\.cdx\.cedexis\.net
+\bpartner\.globalsign\.com
+\bsecure\.globalsign\.com
+\bshop\.globalsign\.com
+\bsupport\.globalsign\.com
+\bwww\.globalsign\.com

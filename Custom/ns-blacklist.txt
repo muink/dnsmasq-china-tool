@@ -6,6 +6,8 @@
 .gigabyte.com.
 .samsung.com.
 .samsungapps.com.
+.htc.com.
+.vsun.com.
 
 # CDN DNS
 .akadns.net.

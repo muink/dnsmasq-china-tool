@@ -56,6 +56,8 @@
 .bocommleasing.com.
 #交银国际信托
 .bocommtrust.com.
+#东方基金管理有限责任公司
+.orient-fund.com.
 
 # 保险
 #平安
@@ -122,6 +124,10 @@
 #亚信科技
 .asiainfo.com.
 .asiainfo-sec.com.
+#DDI智睿企业咨询 智睿企业咨询（深圳）有限公司上海分公司
+.ddiworld.com.
+#字节跳动
+.bytedns.com.
 
 # 航空
 .shanghai-air.com.
@@ -158,6 +164,7 @@
 #网易
 .netease.com.
 .166.com.
+.tx163.com.
 .nease.net.
 .ntes53.com.
 .yodao.com.
@@ -271,8 +278,9 @@
 .9you.com.
 #九维网
 .9wee.net.
-# 优刻得云分发
+#优刻得云分发
 .ugslb.net.
+.ucgslb.net.
 #元栈信息科技（上海）有限公司
 .freebsdchina.org.
 #
@@ -310,6 +318,8 @@
 .chinanetcenter.com.
 .wsclouddns.com.
 .wscvdns.com.
+.qtlcdn.com.
+.qtlcdncn.info.
 #新誉网络
 .idcc.cn.
 #北京蓝汛
@@ -356,6 +366,8 @@
 .dnsece.com
 #云帆加速
 .yfcdn.net.
+#云决科技（深圳）有限公司
+.willcdn.com.
 #容大互联
 .verydns.net.
 .veryns.com.
@@ -394,18 +406,26 @@
 .dnsip.net.
 #xz域名平台 厦门点媒网络科技有限公司
 .xz.com.
-# 无锡卓旺网络科技有限公司
+#无锡卓旺网络科技有限公司
 .idc180.com.
 .52ig.net.
-# eName易名中国
+#eName易名中国
 .ename-dns.com.
 .ename-dns.net.
-# 四川域趣网络科技有限公司
+#四川域趣网络科技有限公司
 .diymysite.com.
-# GJCDN国际CDN免费全球网站加速
+#GJCDN国际CDN免费全球网站加速
 .gjcdn.vip.
-# DvrDydns动态域名系统 深圳市同为数码科技股份有限公司
+#DvrDydns动态域名系统 深圳市同为数码科技股份有限公司
 .dvrdydns.com.
+#云盾智慧安全科技有限公司
+.icloudgslb.com.
+#cedexis2 晋天网络科技（上海）有限公司
+.cedexis.net.
+#青云DNS
+.routewize.com.
+#江苏睿鸿网络技术有限公司
+.rgslb.com.
 #
 .chndns.com.
 .95ns.net.
@@ -716,6 +736,8 @@ dns2.cm10085.com.
 dns3.cm10085.com.
 dns4.cm10085.com.
 dns5.cm10085.com.
+ns1.cnc-gd.net.
+ns2.cnc-gd.net.
 21tb-ns1.cneln.net.
 21tb-ns3.cneln.net.
 ns1.cngnu.net.
@@ -1190,6 +1212,8 @@ ns3.imtmp.net.
 ns2.info10.com.
 ns4.info10.com.
 ns.info10.com.
+ns.inforsec.org.
+ns2.inforsec.org.
 ns1.inspur.com.
 ns2.inspur.com.
 ns3.inspur.com.
