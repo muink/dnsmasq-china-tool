@@ -310,6 +310,8 @@
 .chinanetcenter.com.
 .wsclouddns.com.
 .wscvdns.com.
+.qtlcdn.com.
+.qtlcdncn.info.
 #新誉网络
 .idcc.cn.
 #北京蓝汛
