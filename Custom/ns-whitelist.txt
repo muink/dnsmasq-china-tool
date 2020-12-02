@@ -271,8 +271,9 @@
 .9you.com.
 #九维网
 .9wee.net.
-# 优刻得云分发
+#优刻得云分发
 .ugslb.net.
+.ucgslb.net.
 #元栈信息科技（上海）有限公司
 .freebsdchina.org.
 #
@@ -412,6 +413,10 @@
 .dvrdydns.com.
 #云盾智慧安全科技有限公司
 .icloudgslb.com.
+#cedexis2 晋天网络科技（上海）有限公司
+.cedexis.net.
+#青云DNS
+.routewize.com.
 #
 .chndns.com.
 .95ns.net.

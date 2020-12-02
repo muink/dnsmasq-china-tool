@@ -31,3 +31,4 @@
 \bh3c\.com\.hk
 \bhao123\.com\.sg
 \btencent\.com\.hk
+\b2-01-5830-0005\.cdx\.cedexis\.net
