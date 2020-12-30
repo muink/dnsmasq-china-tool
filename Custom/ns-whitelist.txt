@@ -158,6 +158,7 @@
 #网易
 .netease.com.
 .166.com.
+.tx163.com.
 .nease.net.
 .ntes53.com.
 .yodao.com.
@@ -1201,6 +1202,8 @@ ns3.imtmp.net.
 ns2.info10.com.
 ns4.info10.com.
 ns.info10.com.
+ns.inforsec.org.
+ns2.inforsec.org.
 ns1.inspur.com.
 ns2.inspur.com.
 ns3.inspur.com.
