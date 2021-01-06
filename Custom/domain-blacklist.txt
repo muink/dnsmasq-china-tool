@@ -23,6 +23,7 @@
 \.htcsense\.com
 \.htcvive\.com
 \.vive\.com
+\.viveport\.com
 \.linkedin\.com
 \.licdn\.com
 \.parallels\.com
