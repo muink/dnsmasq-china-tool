@@ -418,6 +418,8 @@
 .cedexis.net.
 #青云DNS
 .routewize.com.
+#江苏睿鸿网络技术有限公司
+.rgslb.com.
 #
 .chndns.com.
 .95ns.net.
@@ -728,6 +730,8 @@ dns2.cm10085.com.
 dns3.cm10085.com.
 dns4.cm10085.com.
 dns5.cm10085.com.
+ns1.cnc-gd.net.
+ns2.cnc-gd.net.
 21tb-ns1.cneln.net.
 21tb-ns3.cneln.net.
 ns1.cngnu.net.
