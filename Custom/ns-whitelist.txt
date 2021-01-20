@@ -56,6 +56,8 @@
 .bocommleasing.com.
 #交银国际信托
 .bocommtrust.com.
+#东方基金管理有限责任公司
+.orient-fund.com.
 
 # 保险
 #平安
@@ -122,6 +124,8 @@
 #亚信科技
 .asiainfo.com.
 .asiainfo-sec.com.
+#DDI智睿企业咨询 智睿企业咨询（深圳）有限公司上海分公司
+.ddiworld.com.
 
 # 航空
 .shanghai-air.com.
