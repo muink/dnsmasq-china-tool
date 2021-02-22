@@ -10,6 +10,7 @@
 \b17117a\.com
 \b177mh\.net
 \b18moe\.com
+\b18shuwu\.com
 \b19xse\.com
 \b20174555\.com
 \b23us\.so
@@ -158,6 +159,7 @@
 \bfs23\.com
 \bfuman8\.net
 \bfutu5\.com
+\bfyq99\.com
 \bg72\.com
 \bgd5558\.com
 \bgepuwang\.net
