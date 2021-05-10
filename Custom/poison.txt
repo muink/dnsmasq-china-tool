@@ -11,6 +11,7 @@
 \b177mh\.net
 \b18moe\.com
 \b18shuwu\.com
+\b18shuwu\.net
 \b19xse\.com
 \b20174555\.com
 \b23us\.so
@@ -90,6 +91,7 @@
 \bbaba\.cc
 \bbaiwanzy\.com
 \bbaiy\.net
+\bbaowen8\.com
 \bbaoyushipin\.me
 \bbbiquge\.com
 \bbcbm688\.com
@@ -226,6 +228,7 @@
 \bmianbaodianying\.com
 \bmianhuatang\.cc
 \bmianhuatang\.la
+\bmiyushu\.com
 \bmp4ba\.com
 \bmuyuge\.com
 \bmxzw\.com

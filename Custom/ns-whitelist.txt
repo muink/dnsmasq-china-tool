@@ -126,6 +126,8 @@
 .asiainfo-sec.com.
 #DDI智睿企业咨询 智睿企业咨询（深圳）有限公司上海分公司
 .ddiworld.com.
+#字节跳动
+.bytedns.com.
 
 # 航空
 .shanghai-air.com.
