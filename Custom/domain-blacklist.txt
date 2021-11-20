@@ -5,7 +5,9 @@
 \.akamai\.net
 -amazon\.com
 \.steampowered\.com
+\.xboxlive\.com
 \.playstation\.net
+\.nintendo\.net
 \.asus\.com
 \.acer\.com
 \.gigabyte\.com
@@ -16,6 +18,8 @@
 \.qualcomm\.com
 \.adobe\.com
 \.microsoft\.com
+\.msftconnecttest\.com
+\.msftncsi\.com
 \.samsung\.com
 \.samsungapps\.com
 \.ericsson\.com
