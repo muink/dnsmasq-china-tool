@@ -96,6 +96,7 @@
 \b911kan\.com
 \b9170\.com
 \b919\.com
+\b91kanju\.com
 \b91vpn\.com
 \b93338c\.cc
 \b941fa\.com
@@ -108,6 +109,8 @@
 \b99meijutv\.com
 \b9apps\.com
 \b9c9c\.cc
+\b9ehao\.com
+\b9ela\.com
 \badnmb2\.com
 \baibookba\.com
 \baishula\.com
@@ -168,6 +171,7 @@
 \bdadatu\.co
 \bdafa53\.com
 \bdajiangcp\.com
+\bdaocaorenshuwu\.com
 \bdatessr\.com
 \bde1919\.com
 \bdhzw\.org
@@ -303,8 +307,10 @@
 \bqqevd\.com
 \bqsptv\.com
 \bqtshu\.la
+\bqu\.la
 \bquanshuge\.com
 \bquanshuwan\.com
+\bqydmz\.com
 \brm96\.com
 \brouding\.com
 \bsha2777\.com
@@ -377,10 +383,12 @@
 \bxiongmao666\.com
 \bxiu8\.com
 \bxmj\.app
+\bxmtyy04\.pw
 \bxs222\.tw
 \bxs520\.cc
 \bxs52\.com
 \bxs74\.com
+\bxs\.la
 \bxsjtxt\.com
 \bxsnvshen\.com
 \bxszww\.com
@@ -404,12 +412,14 @@
 \byikuzy\.com
 \bykanxiaoshuo\.com
 \bymoxuan\.com
+\bymsxq009\.pw
 \byoexs\.com
 \byoyo1900\.com
 \byqzww\.net
 \bysgou\.cc
 \byslang\.com
 \byssm\.tv
+\byuetutu\.com
 \bzaizai8\.com
 \bzhainanfulishe\.com
 \bzhongyidiantong\.com
