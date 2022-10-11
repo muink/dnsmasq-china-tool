@@ -17,6 +17,8 @@
 \.s81c\.com
 \.qualcomm\.com
 \.adobe\.com
+\.windows\.com
+\.windowsupdate\.com
 \.microsoft\.com
 \.msftconnecttest\.com
 \.msftncsi\.com
