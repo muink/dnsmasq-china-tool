@@ -16,6 +16,7 @@
 \.ibm\.com
 \.s81c\.com
 \.qualcomm\.com
+\.nvidia\.com
 \.adobe\.com
 \.windows\.com
 \.windowsupdate\.com
