@@ -1,6 +1,6 @@
 # domain
 # Source: https://github.com/muink/dnsmasq-china-tool/blob/list/accelerated-domains2.china.yml
-# Last Modified: 2025-08-22 01:05:58 UTC
+# Last Modified: 2025-08-22 02:27:58 UTC
 payload:
   - '+.0.zone'
   - '+.00.net'
