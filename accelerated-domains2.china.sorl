@@ -1,7 +1,7 @@
 [AutoProxy 0.2.9]
 ! Expires: 24h
 ! Title: china-dnsmasq-tool
-! Last Modified: Fri, 22 Aug 2025 02:31:14 +0000
+! Last Modified: Sat, 23 Aug 2025 14:02:31 +0000
 !
 ! HomePage: https://github.com/muink/dnsmasq-china-tool
 ! License: MIT
@@ -82984,9 +82984,7 @@
 ||samsuncn.net
 ||samsunganycar.com
 ||samsungcloudcn.com
-||samsungconnectivity.com
 ||samsunghealthcn.com
-||samsungosp.com
 ||samsungyx.com
 ||samton.net
 ||samyang.cc

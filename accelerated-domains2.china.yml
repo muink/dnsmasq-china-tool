@@ -1,6 +1,6 @@
 # domain
 # Source: https://github.com/muink/dnsmasq-china-tool/blob/list/accelerated-domains2.china.yml
-# Last Modified: 2025-08-22 02:31:14 UTC
+# Last Modified: 2025-08-23 14:02:31 UTC
 payload:
   - '+.0.zone'
   - '+.00.net'
@@ -82980,9 +82980,7 @@ payload:
   - '+.samsuncn.net'
   - '+.samsunganycar.com'
   - '+.samsungcloudcn.com'
-  - '+.samsungconnectivity.com'
   - '+.samsunghealthcn.com'
-  - '+.samsungosp.com'
   - '+.samsungyx.com'
   - '+.samton.net'
   - '+.samyang.cc'
