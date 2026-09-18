@@ -1,6 +1,6 @@
 # domain
 # Source: https://github.com/muink/dnsmasq-china-tool/blob/list/accelerated-domains2.china.yml
-# Last Modified: 2026-09-11 02:28:53 UTC
+# Last Modified: 2026-09-18 02:40:13 UTC
 payload:
   - '+.0.xn--czrs0t'
   - '+.0.xn--unup4y'
